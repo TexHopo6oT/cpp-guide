@@ -1,0 +1,3582 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C++ Справочник студента — Интерактивный гид</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    pre, code {
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+    }
+    /* Custom C++ syntax highlighting (светло-серая тема) */
+    .cpp-kw { color: #7e22ce; font-weight: 600; }
+    .cpp-type { color: #0369a1; font-weight: 500; }
+    .cpp-prep { color: #be185d; font-weight: 500; }
+    .cpp-str { color: #15803d; }
+    .cpp-num { color: #c2410c; }
+    .cpp-cm { color: #525252; font-style: italic; }
+    .cpp-fn { color: #a16207; }
+
+    /* Custom C++ syntax highlighting (серая тема) */
+    .dark .cpp-kw { color: #d8b4fe; font-weight: 500; }
+    .dark .cpp-type { color: #7dd3fc; font-weight: 400; }
+    .dark .cpp-prep { color: #f9a8d4; font-weight: 400; }
+    .dark .cpp-str { color: #86efac; }
+    .dark .cpp-num { color: #fdba74; }
+    .dark .cpp-cm { color: #a3a3a3; font-style: italic; }
+    .dark .cpp-fn { color: #fde047; }
+
+    /* Custom scrollbars */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(115, 115, 115, 0.45); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(115, 115, 115, 0.7); }
+
+    /* Linked list arrow animation */
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.92) translateY(4px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .node-pop {
+      animation: popIn 0.22s ease-out forwards;
+    }
+    .code-size-sm pre { font-size: 0.78rem; line-height: 1.5; }
+    .code-size-md pre { font-size: 0.85rem; line-height: 1.55; }
+    .code-size-lg pre { font-size: 0.94rem; line-height: 1.6; }
+
+    /* Print styles for clean study cheat-sheets */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #111827 !important;
+      }
+      header, aside#sidebar, #mobileBackdrop, #toast,
+      #searchFilterBar, button[data-action], #emptyState {
+        display: none !important;
+      }
+      main {
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      #view-reference {
+        display: block !important;
+      }
+      article {
+        background: #ffffff !important;
+        color: #111827 !important;
+        border: 1px solid #cbd5e1 !important;
+        box-shadow: none !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+        margin-bottom: 16px !important;
+      }
+      pre, code {
+        background: #f8fafc !important;
+        color: #0f172a !important;
+      }
+      .cpp-kw { color: #6b21a8 !important; }
+      .cpp-type { color: #0369a1 !important; }
+      .cpp-prep { color: #9d174d !important; }
+      .cpp-str { color: #15803d !important; }
+      .cpp-num { color: #c2410c !important; }
+      .cpp-cm { color: #475569 !important; }
+    }
+  </style>
+</head>
+<body class="bg-neutral-200 text-neutral-900 dark:bg-neutral-700 dark:text-neutral-100 transition-colors duration-200 min-h-screen flex flex-col code-size-md overflow-x-hidden">
+
+  <!-- Top Header -->
+  <header class="sticky top-0 z-40 border-b border-neutral-300 dark:border-neutral-500 bg-neutral-100/95 dark:bg-neutral-600/95 backdrop-blur">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2 sm:gap-4">
+      <!-- Left: Mobile menu + Brand -->
+      <div class="flex items-center gap-2.5 shrink-0">
+        <button id="mobileMenuBtn" type="button" aria-label="Открыть меню разделов"
+          class="lg:hidden p-2 rounded-lg text-neutral-700 dark:text-neutral-200 hover:bg-neutral-200 dark:hover:bg-neutral-500 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white font-mono font-bold text-sm flex items-center justify-center shadow-sm">
+            C++
+          </div>
+          <div class="hidden sm:block">
+            <div class="font-bold text-sm leading-tight tracking-tight">Справочник студента</div>
+            <div class="text-[11px] text-neutral-600 dark:text-neutral-300">C++17 / C++20 · Интерактивный гид</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center: Main View Switcher -->
+      <nav aria-label="Основные режимы" class="flex items-center bg-neutral-200 dark:bg-neutral-700 p-1 rounded-xl gap-1 border border-neutral-300/80 dark:border-neutral-500/80">
+        <button type="button" data-view="reference"
+          class="view-tab px-2.5 sm:px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all">
+          Справочник
+        </button>
+        <button type="button" data-view="labs"
+          class="view-tab px-2.5 sm:px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all">
+          Стенды
+        </button>
+        <button type="button" data-view="quiz"
+          class="view-tab px-2.5 sm:px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all">
+          Тест
+        </button>
+      </nav>
+
+      <!-- Right: Controls -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <button id="printBtn" type="button" title="Распечатать текущий раздел или закладки" aria-label="Печать конспекта"
+          class="inline-flex items-center gap-1.5 px-2.5 h-9 rounded-lg border border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 text-xs font-medium text-neutral-700 dark:text-neutral-200 hover:bg-neutral-300/70 dark:hover:bg-neutral-500 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z" />
+          </svg>
+          <span class="hidden md:inline">Печать</span>
+        </button>
+        <button id="fontSizeBtn" type="button" title="Размер шрифта кода" aria-label="Изменить размер шрифта кода"
+          class="inline-flex items-center justify-center px-2.5 h-9 rounded-lg border border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 text-xs font-mono font-semibold text-neutral-700 dark:text-neutral-200 hover:bg-neutral-300/70 dark:hover:bg-neutral-500 transition-colors">
+          A±
+        </button>
+        <button id="themeToggleBtn" type="button" aria-label="Переключить светло-серую и серую тему" title="Светло-серая / серая тема"
+          class="w-9 h-9 rounded-lg border border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 flex items-center justify-center text-neutral-700 dark:text-neutral-200 hover:bg-neutral-300/70 dark:hover:bg-neutral-500 transition-colors">
+          <svg id="sunIcon" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="4" /><path stroke-linecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41" />
+          </svg>
+          <svg id="moonIcon" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Sidebar Backdrop -->
+  <div id="mobileBackdrop" class="fixed inset-0 z-30 bg-neutral-900/50 backdrop-blur-sm hidden lg:hidden"></div>
+
+  <!-- Main Workspace -->
+  <div class="max-w-7xl w-full mx-auto flex-1 flex relative">
+
+    <!-- Sidebar (Reference Navigation & Progress) -->
+    <aside id="sidebar"
+      class="fixed lg:sticky top-16 left-0 z-30 w-72 h-[calc(100vh-4rem)] overflow-y-auto border-r border-neutral-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-600 p-4 transform -translate-x-full lg:translate-x-0 transition-transform duration-200 shrink-0">
+
+      <!-- Progress Card -->
+      <div class="p-3.5 rounded-xl bg-neutral-200/80 dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-500 mb-4">
+        <div class="flex items-center justify-between text-xs font-medium mb-1.5">
+          <span class="text-neutral-700 dark:text-neutral-200">Прогресс изучения</span>
+          <span id="progressText" class="font-semibold text-indigo-700 dark:text-indigo-200">0 / 0</span>
+        </div>
+        <div class="w-full h-2 rounded-full bg-neutral-300 dark:bg-neutral-800 overflow-hidden">
+          <div id="progressBar" class="h-full bg-indigo-600 dark:bg-indigo-400 rounded-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+        <div class="mt-2.5 flex items-center justify-between text-[11px] text-neutral-600 dark:text-neutral-300">
+          <span id="bookmarkCountText">Закладок: 0</span>
+          <button id="resetProgressBtn" type="button" class="text-neutral-600 dark:text-neutral-300 hover:text-rose-600 dark:hover:text-rose-300 transition-colors underline">
+            Сбросить
+          </button>
+        </div>
+        <div class="mt-2.5 pt-2.5 border-t border-neutral-300/80 dark:border-neutral-500/80 grid grid-cols-2 gap-1.5">
+          <button id="exportProgressBtn" type="button"
+            class="px-2 py-1 rounded-lg border border-neutral-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-600 hover:bg-neutral-300/70 dark:hover:bg-neutral-500 text-[11px] font-medium text-neutral-700 dark:text-neutral-200 transition-colors">
+            ↓ Экспорт JSON
+          </button>
+          <button id="importProgressBtn" type="button"
+            class="px-2 py-1 rounded-lg border border-neutral-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-600 hover:bg-neutral-300/70 dark:hover:bg-neutral-500 text-[11px] font-medium text-neutral-700 dark:text-neutral-200 transition-colors">
+            ↑ Импорт JSON
+          </button>
+          <input id="importProgressFile" type="file" accept=".json,application/json" class="hidden" />
+        </div>
+      </div>
+
+      <!-- Quick Filter Pills -->
+      <div class="grid grid-cols-3 gap-1 mb-4">
+        <button type="button" data-filter="all" class="filter-pill px-2 py-1.5 rounded-lg text-xs font-medium text-center transition-colors">
+          Все
+        </button>
+        <button type="button" data-filter="bookmarked" class="filter-pill px-2 py-1.5 rounded-lg text-xs font-medium text-center transition-colors">
+          Закладки
+        </button>
+        <button type="button" data-filter="unlearned" class="filter-pill px-2 py-1.5 rounded-lg text-xs font-medium text-center transition-colors">
+          Учить
+        </button>
+      </div>
+
+      <!-- Category List -->
+      <div class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-300 px-2 mb-2">
+        Разделы C++
+      </div>
+      <nav id="categoryNav" class="space-y-1"></nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 min-w-0 px-3 sm:px-6 lg:px-8 py-6">
+
+      <!-- VIEW 1: REFERENCE GUIDE -->
+      <section id="view-reference" class="space-y-5">
+        <!-- Search & Filter Bar -->
+        <div id="searchFilterBar" class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+          <div class="relative flex-1 min-w-0">
+            <svg class="w-4 h-4 text-neutral-500 dark:text-neutral-300 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="8" /><path stroke-linecap="round" d="M21 21l-4.35-4.35" />
+            </svg>
+            <input id="searchInput" type="text" placeholder="Поиск: vector, enum class, указатели, assert, while... (нажмите /)"
+              class="w-full pl-10 pr-24 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-600 text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-500 dark:placeholder:text-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500 transition-all" />
+            <button id="clearSearchBtn" type="button"
+              class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 px-2 py-1 text-xs rounded-md bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 hover:bg-neutral-300 dark:hover:bg-neutral-500 transition-colors">
+              Очистить
+            </button>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <select id="levelFilter" aria-label="Уровень сложности"
+              class="w-full sm:w-auto px-3 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-600 text-neutral-900 dark:text-neutral-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40">
+              <option value="all">Все уровни</option>
+              <option value="База">База</option>
+              <option value="Средний">Средний</option>
+              <option value="Продвинутый">Продвинутый</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Active Category Header -->
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-neutral-300 dark:border-neutral-500">
+          <div>
+            <h1 id="activeSectionTitle" class="text-xl sm:text-2xl font-bold tracking-tight">Все разделы</h1>
+            <p id="activeSectionDesc" class="text-sm text-neutral-600 dark:text-neutral-300 mt-0.5">
+              Краткие конспекты, примеры кода, частые ошибки и шпаргалки к экзамену.
+            </p>
+          </div>
+          <span id="resultsBadge" class="px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-500/25 text-indigo-800 dark:text-indigo-200 border border-indigo-200 dark:border-indigo-400/40">
+            0 тем
+          </span>
+        </div>
+
+        <!-- Cards Container -->
+        <div id="cardsContainer" class="space-y-5"></div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden py-14 text-center rounded-2xl border border-dashed border-neutral-400 dark:border-neutral-500 bg-neutral-100/80 dark:bg-neutral-600/70">
+          <div class="text-3xl mb-2">🔍</div>
+          <h3 class="font-semibold text-base">Ничего не найдено</h3>
+          <p class="text-sm text-neutral-600 dark:text-neutral-300 mt-1">Попробуйте изменить запрос или сбросить активные фильтры.</p>
+          <button id="resetAllFiltersBtn" type="button"
+            class="mt-4 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors">
+            Показать все темы
+          </button>
+        </div>
+      </section>
+
+      <!-- VIEW 2: INTERACTIVE LABS -->
+      <section id="view-labs" class="hidden space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-neutral-300 dark:border-neutral-500">
+          <div>
+            <h1 class="text-xl sm:text-2xl font-bold tracking-tight">Интерактивные стенды C++</h1>
+            <p class="text-sm text-neutral-600 dark:text-neutral-300 mt-0.5">Наглядная практика по памяти, указателям, связным спискам и STL.</p>
+          </div>
+          <div class="flex flex-wrap gap-1.5 bg-neutral-300/70 dark:bg-neutral-600 p-1 rounded-xl border border-neutral-300 dark:border-neutral-500">
+            <button type="button" data-lab="linkedlist" class="lab-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all">
+              Связный список
+            </button>
+            <button type="button" data-lab="memory" class="lab-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all">
+              Типы и переполнение
+            </button>
+            <button type="button" data-lab="stl" class="lab-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all">
+              STL и Big-O
+            </button>
+            <button type="button" data-lab="errors" class="lab-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all">
+              Ошибки компилятора
+            </button>
+            <button type="button" data-lab="struct" class="lab-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all">
+              Выравнивание struct
+            </button>
+            <button type="button" data-lab="bitwise" class="lab-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all">
+              Биты и операторы
+            </button>
+            <button type="button" data-lab="vector" class="lab-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all">
+              Память std::vector
+            </button>
+          </div>
+        </div>
+
+        <!-- LAB 1: SINGLY LINKED LIST VISUALIZER -->
+        <div id="lab-linkedlist" class="lab-panel space-y-5">
+          <div class="rounded-2xl border border-neutral-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-600 p-4 sm:p-5 shadow-sm space-y-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+              <div>
+                <h2 class="font-bold text-base sm:text-lg">Визуализатор односвязного списка (<code class="text-indigo-700 dark:text-indigo-200">Node* head</code>)</h2>
+                <p class="text-xs sm:text-sm text-neutral-600 dark:text-neutral-300">Добавляйте, ищите и удаляйте узлы — наблюдайте, как перестраиваются указатели <code class="font-mono">next</code> и адреса в куче.</p>
+              </div>
+              <span id="llCountBadge" class="self-start md:self-auto px-2.5 py-1 rounded-lg text-xs font-mono font-semibold bg-neutral-200 dark:bg-neutral-700 text-neutral-800 dark:text-neutral-200 border border-neutral-300 dark:border-neutral-500">
+                Узлов: 0
+              </span>
+            </div>
+
+            <!-- Controls -->
+            <div class="flex flex-wrap items-center gap-2 pt-1">
+              <input id="llValueInput" type="number" value="42" placeholder="Значение"
+                class="w-28 px-3 py-2 rounded-xl border border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40" />
+              <button id="llPushFrontBtn" type="button"
+                class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-medium transition-colors">
+                + В начало (O(1))
+              </button>
+              <button id="llPushBackBtn" type="button"
+                class="px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs sm:text-sm font-medium transition-colors">
+                + В конец (O(n))
+              </button>
+              <button id="llPopFrontBtn" type="button"
+                class="px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs sm:text-sm font-medium transition-colors">
+                Удалить head
+              </button>
+              <button id="llFindBtn" type="button"
+                class="px-3.5 py-2 rounded-xl border border-neutral-400 dark:border-neutral-400 bg-neutral-200/60 dark:bg-neutral-700 hover:bg-neutral-300/70 dark:hover:bg-neutral-500 text-xs sm:text-sm font-medium transition-colors">
+                Найти значение
+              </button>
+              <button id="llClearBtn" type="button"
+                class="px-3.5 py-2 rounded-xl border border-rose-300 dark:border-rose-400/50 bg-rose-100/70 dark:bg-rose-500/20 text-rose-700 dark:text-rose-200 hover:bg-rose-200/70 dark:hover:bg-rose-500/30 text-xs sm:text-sm font-medium transition-colors">
+                Очистить (delete)
+              </button>
+            </div>
+
+            <!-- Visual Canvas -->
+            <div class="rounded-xl bg-neutral-200/80 dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-500 p-4 overflow-x-auto">
+              <div id="llCanvas" class="flex items-center gap-2 min-h-[108px] py-2"></div>
+            </div>
+
+            <!-- Operation Trace + Live C++ Code -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div class="min-w-0 rounded-xl border border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 p-3.5">
+                <div class="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-300 mb-2">Последняя операция</div>
+                <p id="llStatusText" class="text-sm text-neutral-800 dark:text-neutral-100">
+                  Список инициализирован с тремя узлами. Попробуйте добавить новый узел в начало или в конец.
+                </p>
+              </div>
+              <div class="min-w-0 rounded-xl bg-neutral-200/90 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 border border-neutral-300 dark:border-neutral-500 p-3.5 overflow-x-auto transition-colors">
+                <div class="text-[11px] font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400 mb-1.5">Соответствующий код C++</div>
+                <pre id="llCodePreview" class="text-xs leading-relaxed"></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LAB 2: MEMORY TYPES & OVERFLOW SIMULATOR -->
+        <div id="lab-memory" class="lab-panel hidden space-y-5">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <!-- Sizeof & Platform Selector -->
+            <div class="min-w-0 rounded-2xl border border-neutral-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-600 p-4 sm:p-5 shadow-sm space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <h2 class="font-bold text-base">Размеры типов (<code class="text-indigo-700 dark:text-indigo-200">sizeof</code>)</h2>
+                  <p class="text-xs text-neutral-600 dark:text-neutral-300">Сравнение моделей данных x64: Windows (LLP64) vs Linux (LP64)</p>
+                </div>
+                <select id="platformSelect" aria-label="Платформа"
+                  class="px-2.5 py-1.5 rounded-lg border border-neutral-300 dark:border-neutral-500 bg-neutral-200/80 dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 text-xs font-medium">
+                  <option value="win64">Windows x64 (MSVC / MinGW)</option>
+                  <option value="linux64">Linux / macOS x64 (GCC / Clang)</option>
+                  <option value="x86">32-bit (ILP32)</option>
+                </select>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs sm:text-sm border-collapse">
+                  <thead>
+                    <tr class="border-b border-neutral-300 dark:border-neutral-500 text-neutral-600 dark:text-neutral-300">
+                      <th class="py-2 pr-2 font-semibold">Тип</th>
+                      <th class="py-2 px-2 font-semibold">Байт</th>
+                      <th class="py-2 pl-2 font-semibold">Диапазон / примечание</th>
+                    </tr>
+                  </thead>
+                  <tbody id="sizeofTableBody" class="divide-y divide-neutral-200 dark:divide-neutral-500/60 font-mono text-xs"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 8-bit Overflow & Binary Simulator -->
+            <div class="min-w-0 rounded-2xl border border-neutral-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-600 p-4 sm:p-5 shadow-sm space-y-4">
+              <div>
+                <h2 class="font-bold text-base">Симулятор 8-битного числа и переполнения</h2>
+                <p class="text-xs text-neutral-600 dark:text-neutral-300">Посмотрите, как одни и те же 8 бит читаются как <code class="font-mono">uint8_t</code> и <code class="font-mono">int8_t</code> (дополнительный код).</p>
+              </div>
+
+              <div class="space-y-3">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                  <label for="overflowSlider" class="text-xs font-medium text-neutral-700 dark:text-neutral-200">
+                    Исходное математическое число:
+                  </label>
+                  <div class="flex items-center gap-1.5">
+                    <button id="ovDecBtn" type="button" class="w-8 h-8 rounded-lg border border-neutral-300 dark:border-neutral-500 bg-neutral-200/80 dark:bg-neutral-700 font-mono font-bold hover:bg-neutral-300 dark:hover:bg-neutral-500 transition-colors">-1</button>
+                    <input id="overflowNumberInput" type="number" value="127" min="-32768" max="32768"
+                      class="w-20 px-2 py-1 text-center rounded-lg border border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 font-mono text-sm font-semibold" />
+                    <button id="ovIncBtn" type="button" class="w-8 h-8 rounded-lg border border-neutral-300 dark:border-neutral-500 bg-neutral-200/80 dark:bg-neutral-700 font-mono font-bold hover:bg-neutral-300 dark:hover:bg-neutral-500 transition-colors">+1</button>
+                  </div>
+                </div>
+                <input id="overflowSlider" type="range" min="-150" max="280" value="127" class="w-full accent-indigo-600" />
+              </div>
+
+              <!-- Bit Boxes -->
+              <div>
+                <div class="text-[11px] uppercase tracking-wider font-semibold text-neutral-500 dark:text-neutral-300 mb-1.5">Биты в памяти (8 бит = 1 байт)</div>
+                <div id="bitBoxes" class="grid grid-cols-8 gap-1.5"></div>
+              </div>
+
+              <!-- Interpretations -->
+              <div class="grid grid-cols-2 gap-3">
+                <div class="p-3 rounded-xl bg-neutral-200/80 dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-500">
+                  <div class="text-[11px] text-neutral-600 dark:text-neutral-300 font-mono">uint8_t (0..255)</div>
+                  <div id="uint8Val" class="text-xl font-bold font-mono text-sky-700 dark:text-sky-300 mt-0.5">127</div>
+                  <div id="uint8Warn" class="text-[11px] mt-1 text-neutral-600 dark:text-neutral-300">В пределах диапазона</div>
+                </div>
+                <div class="p-3 rounded-xl bg-neutral-200/80 dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-500">
+                  <div class="text-[11px] text-neutral-600 dark:text-neutral-300 font-mono">int8_t (-128..127)</div>
+                  <div id="int8Val" class="text-xl font-bold font-mono text-indigo-700 dark:text-indigo-200 mt-0.5">127</div>
+                  <div id="int8Warn" class="text-[11px] mt-1 text-neutral-600 dark:text-neutral-300">В пределах диапазона</div>
+                </div>
+              </div>
+              <div class="text-xs text-neutral-700 dark:text-neutral-200 bg-amber-100/80 dark:bg-amber-500/20 border border-amber-300 dark:border-amber-400/40 rounded-xl p-3">
+                <strong class="text-amber-800 dark:text-amber-200">Важно для C++:</strong> переполнение беззнаковых чисел (<code class="font-mono">unsigned</code>) определено стандартом (арифметика по модулю 2<sup>n</sup>), а переполнение знаковых (<code class="font-mono">signed</code>) — это <strong>Undefined Behavior (UB)</strong>!
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LAB 3: STL COMPLEXITY & CONTAINER CHOOSER -->
+        <div id="lab-stl" class="lab-panel hidden space-y-5">
+          <!-- Decision Helper -->
+          <div class="rounded-2xl border border-neutral-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-600 p-4 sm:p-5 shadow-sm space-y-4">
+            <h2 class="font-bold text-base sm:text-lg">Помощник выбора контейнера STL</h2>
+            <div class="flex flex-wrap gap-2" id="stlNeedButtons">
+              <button type="button" data-need="default" class="stl-need-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium border transition-colors">
+                Нужен просто массив
+              </button>
+              <button type="button" data-need="kv_fast" class="stl-need-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium border transition-colors">
+                Ключ → значение (быстро)
+              </button>
+              <button type="button" data-need="kv_sorted" class="stl-need-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium border transition-colors">
+                Ключ → значение (по порядку)
+              </button>
+              <button type="button" data-need="unique" class="stl-need-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium border transition-colors">
+                Только уникальные элементы
+              </button>
+              <button type="button" data-need="ends" class="stl-need-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium border transition-colors">
+                Вставка в начало и конец
+              </button>
+              <button type="button" data-need="max" class="stl-need-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium border transition-colors">
+                Всегда знать максимум
+              </button>
+            </div>
+            <div id="stlRecommendation" class="p-4 rounded-xl bg-indigo-100/70 dark:bg-indigo-500/20 border border-indigo-200 dark:border-indigo-400/40 text-sm"></div>
+          </div>
+
+          <!-- Big-O Table -->
+          <div class="rounded-2xl border border-neutral-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-600 p-4 sm:p-5 shadow-sm space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <h2 class="font-bold text-base">Таблица асимптотической сложности (Big-O)</h2>
+              <input id="stlSearchInput" type="text" placeholder="Фильтр контейнера..."
+                class="sm:w-56 px-3 py-1.5 rounded-lg border border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-500 dark:placeholder:text-neutral-300 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/40" />
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs sm:text-sm border-collapse">
+                <thead>
+                  <tr class="border-b border-neutral-300 dark:border-neutral-500 text-neutral-600 dark:text-neutral-300">
+                    <th class="py-2.5 pr-3 font-semibold">Контейнер</th>
+                    <th class="py-2.5 px-2 font-semibold">Заголовок</th>
+                    <th class="py-2.5 px-2 font-semibold">Доступ</th>
+                    <th class="py-2.5 px-2 font-semibold">Поиск</th>
+                    <th class="py-2.5 px-2 font-semibold">Вставка (конец / середина)</th>
+                    <th class="py-2.5 pl-2 font-semibold">Структура внутри</th>
+                  </tr>
+                </thead>
+                <tbody id="stlTableBody" class="divide-y divide-neutral-200 dark:divide-neutral-500/60"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- LAB 4: COMPILER & RUNTIME ERROR DECODER -->
+        <div id="lab-errors" class="lab-panel hidden space-y-5">
+          <div class="rounded-2xl border border-neutral-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-600 p-4 sm:p-5 shadow-sm space-y-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+              <div>
+                <h2 class="font-bold text-base sm:text-lg">Расшифровщик ошибок компилятора и запуска</h2>
+                <p class="text-xs sm:text-sm text-neutral-600 dark:text-neutral-300">Найдите сообщение GCC / Clang / MSVC по ключевым словам и посмотрите, как исправить код.</p>
+              </div>
+              <div class="flex flex-wrap items-center gap-2">
+                <input id="errSearchInput" type="text" placeholder="Например: undefined reference, segfault..."
+                  class="w-full sm:w-64 px-3 py-2 rounded-xl border border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-500 dark:placeholder:text-neutral-300 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40" />
+                <select id="errStageSelect" aria-label="Этап ошибки"
+                  class="px-3 py-2 rounded-xl border border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 text-xs sm:text-sm">
+                  <option value="all">Все этапы</option>
+                  <option value="Компиляция">Компиляция</option>
+                  <option value="Линковка">Линковка</option>
+                  <option value="Запуск (Runtime)">Запуск (Runtime)</option>
+                </select>
+              </div>
+            </div>
+            <div id="errorsContainer" class="space-y-4"></div>
+          </div>
+        </div>
+
+        <!-- LAB 5: STRUCT PADDING & STACK VS HEAP -->
+        <div id="lab-struct" class="lab-panel hidden space-y-5">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <!-- Struct Padding Builder -->
+            <div class="lg:col-span-2 min-w-0 rounded-2xl border border-neutral-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-600 p-4 sm:p-5 shadow-sm space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <h2 class="font-bold text-base sm:text-lg">Конструктор выравнивания <code class="text-indigo-700 dark:text-indigo-200">struct</code> (Padding)</h2>
+                  <p class="text-xs sm:text-sm text-neutral-600 dark:text-neutral-300">Добавляйте поля, меняйте их порядок и смотрите, сколько байт уходит в выравнивание.</p>
+                </div>
+                <div class="flex flex-wrap gap-1.5">
+                  <button id="structOptimizeBtn" type="button"
+                    class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium transition-colors">
+                    Оптимизировать порядок
+                  </button>
+                  <button id="structResetBtn" type="button"
+                    class="px-3 py-1.5 rounded-xl border border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 hover:bg-neutral-300/70 dark:hover:bg-neutral-500 text-xs font-medium transition-colors">
+                    Сбросить
+                  </button>
+                </div>
+              </div>
+
+              <!-- Add Field Controls -->
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-xs font-medium text-neutral-600 dark:text-neutral-300">Добавить поле:</span>
+                <button type="button" data-add-type="char" class="struct-add-btn px-2.5 py-1.5 rounded-lg border border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 hover:bg-neutral-300/70 dark:hover:bg-neutral-500 font-mono text-xs font-medium transition-colors">+ char (1B)</button>
+                <button type="button" data-add-type="short" class="struct-add-btn px-2.5 py-1.5 rounded-lg border border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 hover:bg-neutral-300/70 dark:hover:bg-neutral-500 font-mono text-xs font-medium transition-colors">+ short (2B)</button>
+                <button type="button" data-add-type="int" class="struct-add-btn px-2.5 py-1.5 rounded-lg border border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 hover:bg-neutral-300/70 dark:hover:bg-neutral-500 font-mono text-xs font-medium transition-colors">+ int (4B)</button>
+                <button type="button" data-add-type="double" class="struct-add-btn px-2.5 py-1.5 rounded-lg border border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 hover:bg-neutral-300/70 dark:hover:bg-neutral-500 font-mono text-xs font-medium transition-colors">+ double (8B)</button>
+                <button type="button" data-add-type="void*" class="struct-add-btn px-2.5 py-1.5 rounded-lg border border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 hover:bg-neutral-300/70 dark:hover:bg-neutral-500 font-mono text-xs font-medium transition-colors">+ void* (8B)</button>
+              </div>
+
+              <!-- Current Fields List -->
+              <div id="structFieldsList" class="space-y-1.5"></div>
+
+              <!-- Metrics -->
+              <div class="grid grid-cols-3 gap-2.5">
+                <div class="p-3 rounded-xl bg-neutral-200/80 dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-500">
+                  <div class="text-[11px] text-neutral-600 dark:text-neutral-300">Полезные данные</div>
+                  <div id="structDataBytes" class="text-lg font-bold font-mono text-sky-700 dark:text-sky-300">0 Б</div>
+                </div>
+                <div class="p-3 rounded-xl bg-neutral-200/80 dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-500">
+                  <div class="text-[11px] text-neutral-600 dark:text-neutral-300">Padding (пустоты)</div>
+                  <div id="structPaddingBytes" class="text-lg font-bold font-mono text-rose-700 dark:text-rose-300">0 Б</div>
+                </div>
+                <div class="p-3 rounded-xl bg-neutral-200/80 dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-500">
+                  <div class="text-[11px] text-neutral-600 dark:text-neutral-300">sizeof(MyStruct)</div>
+                  <div id="structTotalBytes" class="text-lg font-bold font-mono text-indigo-700 dark:text-indigo-200">0 Б</div>
+                </div>
+              </div>
+
+              <!-- Byte Grid -->
+              <div>
+                <div class="flex items-center justify-between text-[11px] uppercase tracking-wider font-semibold text-neutral-500 dark:text-neutral-300 mb-1.5">
+                  <span>Карта памяти (по 8 байт в строке)</span>
+                  <span id="structAlignText" class="font-mono normal-case">alignof: 1</span>
+                </div>
+                <div id="structByteGrid" class="grid grid-cols-8 gap-1"></div>
+              </div>
+
+              <!-- Live C++ Struct Code -->
+              <div class="min-w-0 rounded-xl bg-neutral-200/90 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 border border-neutral-300 dark:border-neutral-500 p-3.5 overflow-x-auto transition-colors">
+                <div class="text-[11px] font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400 mb-1.5">Сгенерированный код C++</div>
+                <pre id="structCodePreview" class="text-xs leading-relaxed"></pre>
+              </div>
+            </div>
+
+            <!-- Stack vs Heap Cheat Card -->
+            <div class="min-w-0 rounded-2xl border border-neutral-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-600 p-4 sm:p-5 shadow-sm space-y-4">
+              <h2 class="font-bold text-base">Стек (Stack) vs Куча (Heap)</h2>
+              <div class="space-y-3 text-xs sm:text-sm">
+                <div class="p-3.5 rounded-xl bg-sky-100/70 dark:bg-sky-500/20 border border-sky-300/80 dark:border-sky-400/40 space-y-1.5">
+                  <div class="font-bold text-sky-800 dark:text-sky-200">📚 Стек (автоматическая память)</div>
+                  <ul class="list-disc pl-4 space-y-1 text-neutral-800 dark:text-neutral-100">
+                    <li>Очень быстрое выделение (сдвиг указателя стека).</li>
+                    <li>Очищается сама при выходе из блока <code class="font-mono">{ }</code>.</li>
+                    <li>Маленький размер (~1–8 МБ) — риск <strong>Stack Overflow</strong> при глубокой рекурсии или огромном массиве.</li>
+                  </ul>
+                </div>
+                <div class="p-3.5 rounded-xl bg-purple-100/70 dark:bg-purple-500/20 border border-purple-300/80 dark:border-purple-400/40 space-y-1.5">
+                  <div class="font-bold text-purple-800 dark:text-purple-200">🏗️ Куча (динамическая память)</div>
+                  <ul class="list-disc pl-4 space-y-1 text-neutral-800 dark:text-neutral-100">
+                    <li>Выделяется через <code class="font-mono">new</code>, <code class="font-mono">std::make_unique</code>, <code class="font-mono">std::vector</code>.</li>
+                    <li>Ограничена объёмом ОЗУ, живёт до явного освобождения.</li>
+                    <li>Если забыть <code class="font-mono">delete</code> (без RAII) — возникает <strong>утечка памяти</strong>.</li>
+                  </ul>
+                </div>
+                <div class="p-3.5 rounded-xl bg-amber-100/80 dark:bg-amber-500/20 border border-amber-300 dark:border-amber-400/40">
+                  <div class="font-bold text-amber-800 dark:text-amber-200 mb-1">💡 Совет по struct</div>
+                  <p class="text-neutral-800 dark:text-neutral-100">Располагайте поля структуры от самого крупного (<code class="font-mono">double</code>, указатели) к самому мелкому (<code class="font-mono">char</code>, <code class="font-mono">bool</code>) — так минимизируются пустые padding-байты.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LAB 6: BITWISE CALCULATOR & OPERATOR PRECEDENCE -->
+        <div id="lab-bitwise" class="lab-panel hidden space-y-5">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <!-- Interactive Bitwise Calculator -->
+            <div class="min-w-0 rounded-2xl border border-neutral-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-600 p-4 sm:p-5 shadow-sm space-y-4">
+              <div>
+                <h2 class="font-bold text-base sm:text-lg">Калькулятор битовых операций (8 бит)</h2>
+                <p class="text-xs sm:text-sm text-neutral-600 dark:text-neutral-300">Проверяйте маски, флаги и побитовые сдвиги <code class="font-mono">&amp;</code>, <code class="font-mono">|</code>, <code class="font-mono">^</code>, <code class="font-mono">~</code>, <code class="font-mono">&lt;&lt;</code>, <code class="font-mono">&gt;&gt;</code>.</p>
+              </div>
+
+              <!-- Inputs & Operator -->
+              <div class="grid grid-cols-3 gap-2.5 items-end">
+                <div>
+                  <label for="bitInputA" class="block text-[11px] font-medium text-neutral-600 dark:text-neutral-300 mb-1">Число A (0..255)</label>
+                  <input id="bitInputA" type="number" min="0" max="255" value="170"
+                    class="w-full px-3 py-2 rounded-xl border border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 font-mono text-sm font-semibold" />
+                </div>
+                <div>
+                  <label for="bitOpSelect" class="block text-[11px] font-medium text-neutral-600 dark:text-neutral-300 mb-1">Операция</label>
+                  <select id="bitOpSelect"
+                    class="w-full px-2.5 py-2 rounded-xl border border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 font-mono text-sm font-semibold">
+                    <option value="&">A &amp; B (AND)</option>
+                    <option value="|">A | B (OR)</option>
+                    <option value="^">A ^ B (XOR)</option>
+                    <option value="~">~A (NOT)</option>
+                    <option value="<<">A &lt;&lt; k (влево)</option>
+                    <option value=">>">A &gt;&gt; k (вправо)</option>
+                  </select>
+                </div>
+                <div id="bitInputBWrap">
+                  <label id="bitInputBLabel" for="bitInputB" class="block text-[11px] font-medium text-neutral-600 dark:text-neutral-300 mb-1">Число B (0..255)</label>
+                  <input id="bitInputB" type="number" min="0" max="255" value="204"
+                    class="w-full px-3 py-2 rounded-xl border border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 font-mono text-sm font-semibold" />
+                </div>
+              </div>
+
+              <!-- Visual Bit Rows -->
+              <div id="bitCalcVisual" class="space-y-2.5 p-3.5 rounded-xl bg-neutral-200/80 dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-500"></div>
+
+              <!-- C++ Expression Result -->
+              <div class="min-w-0 rounded-xl bg-neutral-200/90 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 border border-neutral-300 dark:border-neutral-500 p-3.5 overflow-x-auto transition-colors">
+                <div class="text-[11px] font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400 mb-1">Выражение C++</div>
+                <pre id="bitCodePreview" class="text-xs leading-relaxed"></pre>
+              </div>
+            </div>
+
+            <!-- Operator Precedence Table -->
+            <div class="min-w-0 rounded-2xl border border-neutral-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-600 p-4 sm:p-5 shadow-sm space-y-3">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <h2 class="font-bold text-base">Приоритет операторов C++</h2>
+                  <p class="text-xs text-neutral-600 dark:text-neutral-300">От высшего (1) к низшему — шпаргалка против лишних ошибок со скобками.</p>
+                </div>
+                <input id="opSearchInput" type="text" placeholder="Поиск оператора..."
+                  class="sm:w-44 px-3 py-1.5 rounded-lg border border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-500 dark:placeholder:text-neutral-300 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/40" />
+              </div>
+              <div class="overflow-x-auto max-h-[420px] overflow-y-auto rounded-xl border border-neutral-300 dark:border-neutral-500">
+                <table class="w-full text-left text-xs border-collapse">
+                  <thead class="sticky top-0 bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200">
+                    <tr>
+                      <th class="py-2 px-2.5 font-semibold w-10">#</th>
+                      <th class="py-2 px-2.5 font-semibold">Операторы</th>
+                      <th class="py-2 px-2.5 font-semibold">Назначение</th>
+                    </tr>
+                  </thead>
+                  <tbody id="opTableBody" class="divide-y divide-neutral-200 dark:divide-neutral-500/60"></tbody>
+                </table>
+              </div>
+              <div class="text-xs text-neutral-700 dark:text-neutral-200 bg-rose-100/70 dark:bg-rose-500/20 border border-rose-300/80 dark:border-rose-400/40 rounded-xl p-3">
+                <strong class="text-rose-800 dark:text-rose-200">Ловушка экзамена:</strong> у битовых <code class="font-mono">&amp;</code>, <code class="font-mono">|</code>, <code class="font-mono">^</code> приоритет <strong>ниже</strong>, чем у сравнения <code class="font-mono">==</code>! Всегда пишите <code class="font-mono">if ((flags &amp; MASK) != 0)</code>, а не <code class="font-mono">if (flags &amp; MASK != 0)</code>.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LAB 7: STD::VECTOR MEMORY VISUALIZER -->
+        <div id="lab-vector" class="lab-panel hidden space-y-5">
+          <div class="rounded-2xl border border-neutral-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-600 p-4 sm:p-5 shadow-sm space-y-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+              <div>
+                <h2 class="font-bold text-base sm:text-lg">Визуализатор <code class="text-indigo-700 dark:text-indigo-200">std::vector&lt;int&gt;</code> в памяти</h2>
+                <p class="text-xs sm:text-sm text-neutral-600 dark:text-neutral-300">Наблюдайте за <code class="font-mono">size</code>, <code class="font-mono">capacity</code>, удвоением буфера при <code class="font-mono">push_back</code> и эффектом <code class="font-mono">reserve()</code>.</p>
+              </div>
+              <div class="flex flex-wrap items-center gap-2 text-xs font-mono">
+                <span id="vecSizeBadge" class="px-2.5 py-1 rounded-lg bg-indigo-100 dark:bg-indigo-500/25 text-indigo-800 dark:text-indigo-200 border border-indigo-200 dark:border-indigo-400/40 font-semibold">size: 0</span>
+                <span id="vecCapBadge" class="px-2.5 py-1 rounded-lg bg-sky-100 dark:bg-sky-500/25 text-sky-800 dark:text-sky-200 border border-sky-200 dark:border-sky-400/40 font-semibold">capacity: 0</span>
+                <span id="vecReallocBadge" class="px-2.5 py-1 rounded-lg bg-amber-100 dark:bg-amber-500/25 text-amber-800 dark:text-amber-200 border border-amber-200 dark:border-amber-400/40 font-semibold">реаллокаций: 0</span>
+              </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="flex flex-wrap items-center gap-2">
+              <input id="vecValueInput" type="number" value="7" placeholder="Число"
+                class="w-24 px-3 py-2 rounded-xl border border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40" />
+              <button id="vecPushBtn" type="button"
+                class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-medium transition-colors">
+                push_back()
+              </button>
+              <button id="vecPopBtn" type="button"
+                class="px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs sm:text-sm font-medium transition-colors">
+                pop_back()
+              </button>
+              <button id="vecReserveBtn" type="button"
+                class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-medium transition-colors">
+                reserve(8)
+              </button>
+              <button id="vecShrinkBtn" type="button"
+                class="px-3.5 py-2 rounded-xl border border-neutral-400 dark:border-neutral-400 bg-neutral-200/60 dark:bg-neutral-700 hover:bg-neutral-300/70 dark:hover:bg-neutral-500 text-xs sm:text-sm font-medium transition-colors">
+                shrink_to_fit()
+              </button>
+              <button id="vecClearBtn" type="button"
+                class="px-3.5 py-2 rounded-xl border border-rose-300 dark:border-rose-400/50 bg-rose-100/70 dark:bg-rose-500/20 text-rose-700 dark:text-rose-200 hover:bg-rose-200/70 dark:hover:bg-rose-500/30 text-xs sm:text-sm font-medium transition-colors">
+                clear()
+              </button>
+              <button id="vecResetBtn" type="button"
+                class="px-3.5 py-2 rounded-xl border border-neutral-300 dark:border-neutral-500 bg-neutral-200/60 dark:bg-neutral-700 hover:bg-neutral-300/70 dark:hover:bg-neutral-500 text-xs sm:text-sm font-medium transition-colors">
+                Сброс
+              </button>
+            </div>
+
+            <!-- Buffer Address & Visual Slots -->
+            <div class="rounded-xl bg-neutral-200/80 dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-500 p-4 space-y-2.5 overflow-x-auto">
+              <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+                <span class="text-neutral-700 dark:text-neutral-200">Адрес буфера <code class="font-semibold">v.data()</code>: <strong id="vecAddrText" class="text-indigo-700 dark:text-indigo-200">nullptr</strong></span>
+                <span class="text-neutral-600 dark:text-neutral-300">Занято: синие · Резерв (свободно): пунктир</span>
+              </div>
+              <div id="vecBufferGrid" class="flex items-center gap-1.5 min-h-[68px] py-1"></div>
+            </div>
+
+            <!-- Trace + Code -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div class="min-w-0 rounded-xl border border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 p-3.5">
+                <div class="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-300 mb-1.5">Что произошло в памяти</div>
+                <p id="vecStatusText" class="text-sm text-neutral-800 dark:text-neutral-100">
+                  Вектор пуст (size = 0, capacity = 0). Нажмите push_back() или сначала reserve(8), чтобы сравнить число реаллокаций.
+                </p>
+              </div>
+              <div class="min-w-0 rounded-xl bg-neutral-200/90 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 border border-neutral-300 dark:border-neutral-500 p-3.5 overflow-x-auto transition-colors">
+                <div class="text-[11px] font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400 mb-1.5">Код C++</div>
+                <pre id="vecCodePreview" class="text-xs leading-relaxed"></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 3: INTERACTIVE QUIZ -->
+      <section id="view-quiz" class="hidden space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-neutral-300 dark:border-neutral-500">
+          <div>
+            <h1 class="text-xl sm:text-2xl font-bold tracking-tight">Тренажёр к зачёту и экзамену</h1>
+            <p class="text-sm text-neutral-600 dark:text-neutral-300 mt-0.5">Проверьте знания по синтаксису, указателям, связным спискам, STL и отладке.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <select id="quizCategorySelect" aria-label="Тема теста"
+              class="px-3 py-2 rounded-xl border border-neutral-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-600 text-neutral-900 dark:text-neutral-100 text-sm">
+              <option value="all">Все темы (20 вопросов)</option>
+            </select>
+            <button id="quizRestartBtn" type="button"
+              class="px-3.5 py-2 rounded-xl border border-neutral-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-600 hover:bg-neutral-200 dark:hover:bg-neutral-500 text-sm font-medium transition-colors">
+              Заново
+            </button>
+          </div>
+        </div>
+
+        <!-- Quiz Card -->
+        <div id="quizCard" class="rounded-2xl border border-neutral-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-600 p-5 sm:p-6 shadow-sm space-y-5">
+          <div class="flex items-center justify-between text-xs sm:text-sm">
+            <span id="quizCounter" class="font-semibold text-indigo-700 dark:text-indigo-200">Вопрос 1 из 15</span>
+            <span id="quizScore" class="font-mono font-semibold text-neutral-700 dark:text-neutral-200">Счёт: 0</span>
+          </div>
+          <div class="w-full h-2 rounded-full bg-neutral-300 dark:bg-neutral-700 overflow-hidden">
+            <div id="quizProgressBar" class="h-full bg-indigo-600 dark:bg-indigo-400 transition-all duration-300" style="width: 0%"></div>
+          </div>
+
+          <div id="quizBody" class="space-y-4"></div>
+
+          <div id="quizFeedback" class="hidden rounded-xl p-4 text-sm border"></div>
+
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-2">
+            <div class="flex items-center gap-2">
+              <span id="quizTopicTag" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200"></span>
+              <span class="hidden sm:inline text-[11px] text-neutral-500 dark:text-neutral-300 font-mono">Клавиши: 1–4 выбор · Enter далее</span>
+            </div>
+            <button id="quizNextBtn" type="button" disabled
+              class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium transition-colors">
+              Следующий вопрос →
+            </button>
+          </div>
+        </div>
+
+        <!-- Quiz Summary Card -->
+        <div id="quizSummary" class="hidden rounded-2xl border border-neutral-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-600 p-6 sm:p-8 shadow-sm text-center space-y-4">
+          <div id="quizSummaryEmoji" class="text-5xl">🎯</div>
+          <h2 id="quizSummaryTitle" class="text-2xl font-bold">Тест завершён!</h2>
+          <p id="quizSummaryText" class="text-neutral-700 dark:text-neutral-200 max-w-md mx-auto"></p>
+          <div class="flex flex-wrap justify-center gap-3 pt-2">
+            <button id="quizTryAgainBtn" type="button"
+              class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors">
+              Пройти ещё раз
+            </button>
+            <button id="quizGoRefBtn" type="button"
+              class="px-5 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 hover:bg-neutral-300/70 dark:hover:bg-neutral-500 text-sm font-medium transition-colors">
+              Вернуться в справочник
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast"
+    class="fixed bottom-5 right-5 z-50 px-4 py-2.5 rounded-xl bg-neutral-800 dark:bg-neutral-200 text-neutral-100 dark:text-neutral-900 text-sm font-medium shadow-lg opacity-0 translate-y-3 pointer-events-none transition-all duration-200">
+    Скопировано!
+  </div>
+
+  <script>
+    // =========================================================================
+    // 1. DATA: CATEGORIES, TOPICS, STL, QUIZ
+    // =========================================================================
+    const CATEGORIES = [
+      { id: 'all', name: 'Все разделы', icon: '📚', desc: 'Полный конспект по современному C++ для лабораторных, зачётов и экзаменов.' },
+      { id: 'basics', name: 'Основы и типы', icon: '🧱', desc: 'Базовая структура программы, типы данных, const/constexpr, ввод и вывод.' },
+      { id: 'control', name: 'Ветвления и циклы', icon: '🔁', desc: 'Условные операторы, сравнение while, do-while, for, break и continue.' },
+      { id: 'enums', name: 'Перечисления (enum)', icon: '🏷️', desc: 'Классический enum и строго типизированный enum class (C++11).' },
+      { id: 'functions', name: 'Функции и лямбды', icon: '⚡', desc: 'Передача параметров по значению и ссылке, перегрузка, лямбда-выражения.' },
+      { id: 'memory', name: 'Указатели и память', icon: '🧠', desc: 'Стек, куча, указатели, ссылки, RAII и умные указатели.' },
+      { id: 'structures', name: 'Связные списки', icon: '🔗', desc: 'Структуры данных, узлы Node, обход, вставка и безопасное удаление.' },
+      { id: 'oop', name: 'ООП и классы', icon: '🏗️', desc: 'Инкапсуляция, конструкторы, наследование и полиморфизм (virtual/override).' },
+      { id: 'stl', name: 'Контейнеры STL', icon: '📦', desc: 'std::vector, std::string, std::map, std::unordered_map и алгоритмы.' },
+      { id: 'debug', name: 'Отладка и ошибки', icon: '🐞', desc: 'Исключения, assert, отладчик, санитайзеры и методы поиска багов.' },
+      { id: 'strings', name: 'Строки и view', icon: '🔤', desc: 'Работа с std::string, поиск, подстроки и невладеющий std::string_view (C++17).' },
+      { id: 'files', name: 'Файлы (<fstream>)', icon: '📄', desc: 'Чтение и запись текстовых и бинарных файлов, проверка ошибок открытия.' },
+      { id: 'templates', name: 'Шаблоны (template)', icon: '🧩', desc: 'Обобщённые функции и классы, инстанцирование и концепты C++20.' },
+      { id: 'operators', name: 'Перегрузка операторов', icon: '➕', desc: 'Перегрузка +, ==, << для пользовательских типов и правила хорошего тона.' },
+      { id: 'algorithms', name: 'Алгоритмы и поиск', icon: '⚙️', desc: 'Стандартные алгоритмы STL, бинарный поиск, компараторы и асимптотика.' },
+      { id: 'modern', name: 'Современный C++17/20', icon: '✨', desc: 'std::optional, std::variant, structured bindings, ranges и концепты.' },
+      { id: 'concurrency', name: 'Многопоточность', icon: '🧵', desc: 'Потоки std::thread, защита данных через std::mutex и std::lock_guard.' }
+    ];
+
+    const TOPICS = [
+      {
+        id: 'basics-io',
+        category: 'basics',
+        title: 'Структура программы, типы и ввод-вывод',
+        level: 'База',
+        headers: ['<iostream>', '<iomanip>', '<cstdint>'],
+        summary: 'Любая программа на C++ начинается с функции main(). Для вывода используется std::cout, для ввода — std::cin. Используйте auto для вывода типа и const/constexpr для неизменяемых значений.',
+        code: `#include <iostream>
+#include <iomanip>
+#include <cstdint>
+
+int main() {
+    constexpr double TAX = 1.2;
+    int32_t count = 0;        // гарантированно 32 бита
+    double price = 19.5;
+
+    std::cout << "Введите количество: ";
+    if (std::cin >> count) {
+        auto total = price * count * TAX; // компилятор выведет double
+        std::cout << std::fixed << std::setprecision(2)
+                  << "Итого с налогом: " << total << "\\n";
+    }
+    return 0;
+}`,
+        pitfall: 'Неинициализированные локальные переменные (int x;) содержат «мусор» из стека — их чтение вызывает Undefined Behavior. Всегда пишите int x = 0; или int x{};.',
+        examTip: 'Отличие const от constexpr: const обещает не менять переменную после инициализации (значение может стать известно в рантайме), а constexpr требует вычисления на этапе компиляции.'
+      },
+      {
+        id: 'control-loops',
+        category: 'control',
+        title: 'Ветвления и циклы: while, do-while, for',
+        level: 'База',
+        headers: ['<iostream>', '<vector>'],
+        summary: 'Ветвления (if/else, switch) выбирают путь выполнения один раз, а циклы повторяют блок кода. Цикл while проверяет условие ДО тела (0+ итераций), do-while — ПОСЛЕ тела (минимум 1 итерация), for удобен при известном числе шагов.',
+        code: `#include <iostream>
+#include <vector>
+
+int main() {
+    // 1. Классический for (известно число шагов)
+    for (int i = 0; i < 5; ++i) {
+        if (i == 2) continue; // пропустить текущую итерацию
+        if (i == 4) break;    // досрочно выйти из цикла
+        std::cout << i << " ";
+    }
+
+    // 2. Range-based for (C++11) — безопасный обход контейнера
+    std::vector<int> nums = {10, 20, 30};
+    for (const int& x : nums) {
+        std::cout << x << " ";
+    }
+
+    // 3. do-while — выполнится хотя бы 1 раз (удобно для меню/ввода)
+    int choice = 0;
+    do {
+        choice++;
+    } while (choice < 1);
+    return 0;
+}`,
+        table: {
+          headers: ['Цикл', 'Проверка условия', 'Мин. итераций', 'Когда применять'],
+          rows: [
+            ['for', 'До тела (предусловие)', '0', 'Счётчик, индексы, обход диапазона'],
+            ['while', 'До тела (предусловие)', '0', 'Пока выполняется условие (чтение файла/потока)'],
+            ['do-while', 'После тела (постусловие)', '1', 'Валидация ввода, консольное меню']
+          ]
+        },
+        pitfall: 'В switch не забывайте break в конце каждого case — иначе выполнится «проваливание» (fallthrough) в следующий case. В if не путайте == (сравнение) и = (присваивание).',
+        examTip: 'На экзамене часто спрашивают разницу между break (выходит из ближайшего цикла/switch) и continue (переходит к следующей итерации цикла).'
+      },
+      {
+        id: 'enums-classic-vs-class',
+        category: 'enums',
+        title: 'Перечисления: enum vs enum class (C++11)',
+        level: 'База',
+        headers: ['<cstdint>', '<iostream>'],
+        summary: 'Перечисления задают именованный набор целочисленных констант. Классический enum «загрязняет» окружающую область видимости и неявно приводится к int. Современный enum class (scoped enum) изолирует имена и запрещает случайное сравнение разных перечислений.',
+        code: `#include <cstdint>
+#include <iostream>
+
+// Устаревший классический enum
+enum OldColor { RED, GREEN, BLUE }; // имена видны глобально!
+
+// Современный строго типизированный enum class (C++11)
+enum class Status : uint8_t { // явный базовый тип = 1 байт
+    Ok = 0,
+    Warning = 1,
+    Error = 2
+};
+
+int main() {
+    Status s = Status::Ok;
+    // int x = s; // ОШИБКА компиляции: нет неявного приведения!
+    int code = static_cast<int>(s); // явное приведение
+
+    if (s == Status::Ok) {
+        std::cout << "Код статуса: " << code << "\\n";
+    }
+    return 0;
+}`,
+        table: {
+          headers: ['Характеристика', 'Классический enum', 'enum class (C++11)'],
+          rows: [
+            ['Область видимости', 'Общая (имена могут конфликтовать)', 'Внутри перечисления (Status::Ok)'],
+            ['Неявное приведение к int', 'Да (источник скрытых багов)', 'Нет (нужен static_cast)'],
+            ['Указание базового типа', 'Поддерживается с C++11', 'Да (: uint8_t, : int и т.д.)']
+          ]
+        },
+        pitfall: 'В классическом enum нельзя объявить два перечисления с одинаковыми именами элементов (например, Color::RED и TrafficLight::RED) в одной области видимости.',
+        examTip: 'Указание базового типа (например, : uint8_t) экономит память в структурах и позволяет делать предварительное объявление (forward declaration) перечисления.'
+      },
+      {
+        id: 'functions-params',
+        category: 'functions',
+        title: 'Функции, ссылки и лямбда-выражения',
+        level: 'База',
+        headers: ['<string>', '<vector>', '<algorithm>'],
+        summary: 'Простые типы (int, double) передавайте по значению. Тяжёлые объекты (std::string, std::vector) передавайте по константной ссылке (const T&), чтобы избежать лишнего копирования. Если функция должна изменить аргумент — используйте неконстантную ссылку (T&).',
+        code: `#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+// Передача по const& — без копирования и без изменения
+void printName(const std::string& name) {
+    std::cout << "Студент: " << name << "\\n";
+}
+
+// Передача по ссылке — изменяем оригинал
+void addBonus(int& score, int bonus = 5) { // параметр по умолчанию
+    score += bonus;
+}
+
+int main() {
+    printName("Алексей");
+    int score = 80;
+    addBonus(score); // score станет 85
+
+    // Лямбда-функция: [захват](параметры) { тело }
+    std::vector<int> v = {5, 1, 4, 2};
+    std::sort(v.begin(), v.end(), [](int a, int b) {
+        return a > b; // сортировка по убыванию
+    });
+    return 0;
+}`,
+        pitfall: 'Никогда не возвращайте ссылку или указатель на локальную переменную функции — после выхода из функции её память на стеке уничтожается (висячая ссылка).',
+        examTip: 'Захват в лямбде: [] — ничего, [=] — все локальные по значению, [&] — все по ссылке, [x, &y] — выборочно.'
+      },
+      {
+        id: 'memory-pointers-smart',
+        category: 'memory',
+        title: 'Указатели, ссылки, куча и умные указатели (RAII)',
+        level: 'Средний',
+        headers: ['<memory>', '<iostream>'],
+        summary: 'Указатель (T*) хранит адрес в памяти и может быть nullptr или переназначен. Ссылка (T&) — это псевдоним существующего объекта, она не может быть пустой. Для динамической памяти в современном C++ вместо ручных new/delete используйте std::unique_ptr и std::shared_ptr.',
+        code: `#include <iostream>
+#include <memory>
+
+int main() {
+    int value = 10;
+    int* ptr = &value;  // адрес переменной value
+    int& ref = value;   // ссылка на value
+    *ptr = 20;          // разыменование: value == 20
+    ref = 30;           // value == 30
+
+    // Ручная работа с кучей (риск утечки при return/исключении)
+    int* rawArr = new int[5]{1, 2, 3, 4, 5};
+    delete[] rawArr;    // обязательно delete[] для массивов!
+    rawArr = nullptr;
+
+    // Современный C++ (RAII): память освободится сама
+    auto smart = std::make_unique<int>(99);
+    std::cout << *smart << "\\n";
+    return 0;
+}`,
+        table: {
+          headers: ['Свойство', 'Указатель (T*)', 'Ссылка (T&)'],
+          rows: [
+            ['Может быть пустым', 'Да (nullptr)', 'Нет (обязательна инициализация)'],
+            ['Переназначение', 'Можно указать на другой объект', 'Навсегда привязана к одному объекту'],
+            ['Синтаксис доступа', '*ptr и ptr->field', 'ref и ref.field']
+          ]
+        },
+        pitfall: 'Вызов delete вместо delete[] для массива (new int[n]) — это Undefined Behavior. Повторный delete одного адреса (double free) приводит к аварийному завершению.',
+        examTip: 'RAII (Resource Acquisition Is Initialization) — ключевая идиома C++: ресурс захватывается в конструкторе объекта и гарантированно освобождается в его деструкторе.'
+      },
+      {
+        id: 'structures-linked-list',
+        category: 'structures',
+        title: 'Односвязный список: структура узла и операции',
+        level: 'Средний',
+        headers: ['<iostream>'],
+        summary: 'Односвязный список состоит из узлов (Node), каждый из которых хранит данные и указатель next на следующий узел. Последний узел указывает на nullptr. Вставка в начало работает за O(1), поиск и доступ по индексу — за O(n).',
+        code: `#include <iostream>
+
+struct Node {
+    int data;
+    Node* next;
+};
+
+// Вставка в начало за O(1)
+void pushFront(Node*& head, int val) {
+    head = new Node{val, head};
+}
+
+// Безопасное удаление всех узлов (без утечек!)
+void clearList(Node*& head) {
+    while (head != nullptr) {
+        Node* temp = head;   // сохраняем адрес текущего узла
+        head = head->next;   // сдвигаем голову вперёд
+        delete temp;         // освобождаем память
+    }
+}
+
+int main() {
+    Node* head = nullptr;
+    pushFront(head, 30);
+    pushFront(head, 10);
+    for (Node* cur = head; cur != nullptr; cur = cur->next) {
+        std::cout << cur->data << " -> ";
+    }
+    std::cout << "nullptr\\n";
+    clearList(head);
+    return 0;
+}`,
+        pitfall: 'Типичная ошибка при очистке списка — сделать delete head, а потом пытаться прочитать head->next. Всегда сохраняйте next или текущий указатель во временную переменную ДО delete.',
+        examTip: 'Попробуйте вкладку «Стенды → Связный список» вверху: там можно пошагово вставлять и удалять узлы с визуализацией адресов памяти.'
+      },
+      {
+        id: 'oop-classes',
+        category: 'oop',
+        title: 'Классы, конструкторы, наследование и полиморфизм',
+        level: 'Средний',
+        headers: ['<iostream>', '<string>'],
+        summary: 'В C++ class отличается от struct только доступом по умолчанию (private у class, public у struct). Для полиморфизма через указатель/ссылку на базовый класс методы помечают virtual, а в наследнике — override.',
+        code: `#include <iostream>
+#include <string>
+
+class Shape {
+public:
+    virtual double area() const = 0; // чисто виртуальный метод (интерфейс)
+    virtual ~Shape() = default;      // виртуальный деструктор обязателен!
+};
+
+class Rectangle : public Shape {
+    double w_, h_;
+public:
+    // Список инициализации полей (быстрее присваивания в теле)
+    Rectangle(double w, double h) : w_(w), h_(h) {}
+
+    double area() const override {
+        return w_ * h_;
+    }
+};
+
+int main() {
+    Rectangle rect(4.0, 5.0);
+    const Shape& fig = rect;
+    std::cout << "Площадь: " << fig.area() << "\\n";
+    return 0;
+}`,
+        pitfall: 'Если удалить объект наследника через указатель на базовый класс (Shape*), у которого нет virtual ~Shape(), деструктор наследника не вызовется — возникнет утечка ресурсов.',
+        examTip: 'Правило трёх/пяти: если класс вручную управляет ресурсом (память, файл) и вы написали свой деструктор, вам также нужно определить конструктор копирования и оператор присваивания (или запретить их через = delete).'
+      },
+      {
+        id: 'stl-containers',
+        category: 'stl',
+        title: 'Основные контейнеры и алгоритмы STL',
+        level: 'Средний',
+        headers: ['<vector>', '<unordered_map>', '<algorithm>', '<numeric>'],
+        summary: 'Стандартная библиотека (STL) избавляет от ручного управления памятью. В 80% задач нужен std::vector. Для словарей используйте std::unordered_map (O(1) в среднем) или std::map (отсортированные ключи, O(log n)).',
+        code: `#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <algorithm>
+#include <numeric>
+
+int main() {
+    std::vector<int> grades = {4, 5, 3, 5, 4};
+    grades.push_back(5);
+
+    // Подсчёт суммы и сортировка из <numeric> и <algorithm>
+    int sum = std::accumulate(grades.begin(), grades.end(), 0);
+    std::sort(grades.begin(), grades.end());
+    std::cout << "Сумма оценок: " << sum << "\\n";
+
+    // Словарь (хеш-таблица): частота оценок
+    std::unordered_map<int, int> freq;
+    for (int g : grades) {
+        freq[g]++;
+    }
+    for (const auto& [grade, count] : freq) { // structured bindings (C++17)
+        std::cout << "Оценка " << grade << ": " << count << " шт.\\n";
+    }
+    return 0;
+}`,
+        pitfall: 'Обращение map[key] создаёт новый элемент со значением по умолчанию (0), если ключа нет! Для проверки наличия ключа используйте map.find(key) != map.end() или map.contains(key) (C++20).',
+        examTip: 'У std::vector метод push_back может вызвать реаллокацию памяти, что инвалидирует все ранее сохранённые указатели и итераторы на его элементы. Если размер известен заранее — вызывайте v.reserve(n).'
+      },
+      {
+        id: 'debug-techniques',
+        category: 'debug',
+        title: 'Методы отладки, assert и санитайзеры',
+        level: 'Продвинутый',
+        headers: ['<cassert>', '<stdexcept>', '<iostream>'],
+        summary: 'Отладка в C++ включает: ручную инспекцию кода, отладочную печать (std::cerr), интерактивный отладчик (GDB / Visual Studio: точки останова, пошаговый проход, стек вызовов, Watch), проверки assert() и динамические анализаторы (ASan/UBSan).',
+        code: `#include <cassert>
+#include <iostream>
+#include <stdexcept>
+
+double safeDivide(double a, double b) {
+    // 1. Проверка инварианта разработчика (работает в Debug-сборке)
+    assert(b != 0.0 && "Делитель не должен быть нулём!");
+
+    // 2. Обработка ошибок времени выполнения (работает всегда)
+    if (b == 0.0) {
+        throw std::invalid_argument("Деление на ноль");
+    }
+    return a / b;
+}
+
+int main() {
+    try {
+        std::cout << safeDivide(10.0, 2.0) << "\\n";
+    } catch (const std::exception& e) {
+        std::cerr << "[ERROR] " << e.what() << "\\n";
+    }
+    return 0;
+}`,
+        table: {
+          headers: ['Метод отладки', 'Инструмент / механизм', 'Что помогает найти'],
+          rows: [
+            ['Интерактивный отладчик', 'Breakpoints, Step Over/Into, Call Stack', 'Логические ошибки, неверные значения переменных'],
+            ['Утверждения (Assertions)', 'assert(cond) из <cassert>', 'Нарушение предусловий и инвариантов в Debug'],
+            ['Динамический анализ', 'AddressSanitizer (-fsanitize=address,undefined)', 'Выход за границы массива, утечки памяти, UB'],
+            ['Дихотомия (бинарный поиск)', 'Деление кода/коммитов пополам (git bisect)', 'Быстрая локализация места появления бага']
+          ]
+        },
+        pitfall: 'Не помещайте в assert() выражения с побочными эффектами (например, assert(++i < 10)): в Release-сборке с флагом -DNDEBUG макрос assert полностью вырезается компилятором!',
+        examTip: 'Выводите отладочные логи в std::cerr (небуферизованный поток ошибок), а не в std::cout — так сообщение успеет напечататься даже перед падением программы (segfault).'
+      },
+      {
+        id: 'strings-view',
+        category: 'strings',
+        title: 'Строки: std::string и std::string_view (C++17)',
+        level: 'База',
+        headers: ['<string>', '<string_view>', '<iostream>'],
+        summary: 'std::string управляет динамическим буфером символов и поддерживает конкатенацию, поиск (find) и подстроки (substr). Если функция только читает текст, в C++17 удобно принимать std::string_view — лёгкую пару (указатель + длина) без выделения памяти.',
+        code: `#include <iostream>
+#include <string>
+#include <string_view>
+
+// Без копирования даже для строковых литералов "..."
+void printPrefix(std::string_view sv) {
+    if (sv.size() >= 3) {
+        std::cout << "Префикс: " << sv.substr(0, 3) << "\\n";
+    }
+}
+
+int main() {
+    std::string s = "Hello, C++ student!";
+    std::size_t pos = s.find("C++");
+    if (pos != std::string::npos) {
+        s.replace(pos, 3, "C++20");
+    }
+    printPrefix(s);
+    printPrefix("Literature");
+    return 0;
+}`,
+        pitfall: 'Никогда не сохраняйте std::string_view, указывающий на временную строку (например, возврат std::string из функции): после окончания выражения строка уничтожится, и view станет висячим.',
+        examTip: 'Для ввода строки с пробелами используйте std::getline(std::cin, s), а не std::cin >> s (который читает только до первого пробела).'
+      },
+      {
+        id: 'files-fstream',
+        category: 'files',
+        title: 'Чтение и запись файлов (<fstream>)',
+        level: 'Средний',
+        headers: ['<fstream>', '<iostream>', '<string>'],
+        summary: 'Потоки std::ifstream (чтение) и std::ofstream (запись) работают по принципу RAII — файл автоматически закроется в деструкторе при выходе из области видимости. Всегда проверяйте, удалось ли открыть файл (if (!file)).',
+        code: `#include <fstream>
+#include <iostream>
+#include <string>
+
+int main() {
+    // Запись в файл (std::ios::app — дописать в конец)
+    {
+        std::ofstream out("notes.txt");
+        if (!out) {
+            std::cerr << "Не удалось создать файл\\n";
+            return 1;
+        }
+        out << "Лабораторная №1\\nОценка: 5\\n";
+    } // файл закрылся автоматически
+
+    // Построчное чтение
+    std::ifstream in("notes.txt");
+    std::string line;
+    while (std::getline(in, line)) {
+        std::cout << line << "\\n";
+    }
+    return 0;
+}`,
+        pitfall: 'Не пишите цикл while (!in.eof()) — флаг eof выставляется только ПОСЛЕ неудачного чтения, из-за чего последняя строка обрабатывается дважды. Правильно: while (std::getline(in, line)) или while (in >> x).',
+        examTip: 'При работе с бинарными файлами (std::ios::binary) используйте методы .read() и .write(), а не операторы << и >>.'
+      },
+      {
+        id: 'templates-basics',
+        category: 'templates',
+        title: 'Шаблоны функций и классов (template)',
+        level: 'Средний',
+        headers: ['<iostream>', '<vector>'],
+        summary: 'Шаблоны позволяют писать обобщённый код, не зависящий от конкретного типа данных. Компилятор генерирует (инстанцирует) нужную версию функции или класса под каждый переданный тип на этапе компиляции без потери скорости.',
+        code: `#include <iostream>
+
+// Шаблонная функция
+template <typename T>
+T maxOf(const T& a, const T& b) {
+    return (a > b) ? a : b;
+}
+
+// Шаблонный класс-обёртка
+template <typename T>
+class Box {
+    T value_;
+public:
+    explicit Box(T v) : value_(std::move(v)) {}
+    const T& get() const { return value_; }
+};
+
+int main() {
+    std::cout << maxOf(3, 7) << "\\n";        // T = int
+    std::cout << maxOf(2.5, 1.8) << "\\n";    // T = double
+    Box<int> b(42);
+    std::cout << b.get() << "\\n";
+    return 0;
+}`,
+        pitfall: 'Реализацию шаблонов обычно нужно помещать прямо в заголовочный файл (.h / .hpp), а не в отдельный .cpp — иначе компилятор не сможет инстанцировать шаблон в других единицах трансляции и выдаст ошибку линковки.',
+        examTip: 'В параметрах шаблона слова typename и class полностью взаимозаменяемы (template <typename T> эквивалентно template <class T>).'
+      },
+      {
+        id: 'operators-overload',
+        category: 'operators',
+        title: 'Перегрузка операторов (+, ==, <<)',
+        level: 'Средний',
+        headers: ['<iostream>'],
+        summary: 'Перегрузка операторов позволяет использовать привычный синтаксис (a + b, a == b, std::cout << a) для собственных структур и классов. Оператор вывода << всегда перегружают как свободную (часто friend) функцию, так как слева стоит std::ostream.',
+        code: `#include <iostream>
+
+struct Vec2 {
+    double x = 0.0;
+    double y = 0.0;
+
+    // Бинарный + (возвращает новый объект по значению)
+    Vec2 operator+(const Vec2& rhs) const {
+        return {x + rhs.x, y + rhs.y};
+    }
+
+    // Сравнение на равенство
+    bool operator==(const Vec2& rhs) const {
+        return x == rhs.x && y == rhs.y;
+    }
+};
+
+// Оператор вывода в поток (возвращает std::ostream& для цепочек)
+std::ostream& operator<<(std::ostream& os, const Vec2& v) {
+    return os << "(" << v.x << ", " << v.y << ")";
+}
+
+int main() {
+    Vec2 a{1.0, 2.0}, b{3.0, 4.0};
+    std::cout << "Сумма: " << (a + b) << "\\n";
+    return 0;
+}`,
+        pitfall: 'В C++ нельзя придумывать новые операторы (например, **) и нельзя перегружать ::, . (точку), .* и ?:. Также не нарушайте интуитивный смысл оператора (например, не делайте в operator+ вычитание).',
+        examTip: 'Постфиксный инкремент operator++(int) отличается от префиксного operator++() фиктивным параметром int и работает чуть медленнее, так как вынужден возвращать копию старого значения.'
+      },
+      {
+        id: 'basics-casts',
+        category: 'basics',
+        title: 'Приведение типов: static_cast, dynamic_cast, const_cast',
+        level: 'Средний',
+        headers: ['<iostream>', '<typeinfo>'],
+        summary: 'В C++ вместо опасного C-style cast (int)x используют четыре именованных оператора приведения. Они явно показывают намерение программиста и проверяются компилятором.',
+        code: `#include <iostream>
+
+struct Base { virtual ~Base() = default; };
+struct Derived : Base { void hello() { std::cout << "Derived!\n"; } };
+
+int main() {
+    // 1. static_cast — безопасное приведение на этапе компиляции
+    double d = 3.99;
+    int i = static_cast<int>(d); // 3
+
+    // 2. dynamic_cast — безопасное приведение вниз по иерархии (в рантайме)
+    Base* b = new Derived();
+    if (Derived* der = dynamic_cast<Derived*>(b)) {
+        der->hello(); // сработает, только если b реально указывает на Derived
+    }
+    delete b;
+    return 0;
+}`,
+        table: {
+          headers: ['Оператор', 'Когда использовать', 'Безопасность'],
+          rows: [
+            ['static_cast<T>(x)', 'Числа, enum class -> int, void* -> T*', 'Проверяется при компиляции'],
+            ['dynamic_cast<T>(x)', 'Приведение полиморфных классов (Base* -> Derived*)', 'Проверяется в рантайме (nullptr при неудаче)'],
+            ['const_cast<T>(x)', 'Снятие const (только для старых C-API)', 'Опасно: менять исходную const-переменную — UB'],
+            ['reinterpret_cast<T>(x)', 'Побитовая трактовка адреса (сеть, драйверы)', 'Максимально опасно, платформозависимо']
+          ]
+        },
+        pitfall: 'Никогда не используйте C-style cast вроде (int*)ptr в C++: он может молча выполнить reinterpret_cast или снять const, скрыв серьёзную ошибку типов.',
+        examTip: 'Чтобы dynamic_cast работал, базовый класс обязан иметь хотя бы одну виртуальную функцию (обычно virtual ~Base() = default).'
+      },
+      {
+        id: 'functions-recursion',
+        category: 'functions',
+        title: 'Рекурсия и стек вызовов (Call Stack)',
+        level: 'База',
+        headers: ['<iostream>'],
+        summary: 'Рекурсия — вызов функцией самой себя для сведённой к меньшему размеру задачи. Каждая рекурсивная функция обязана иметь базовый случай (условие остановки) и шаг приближения к нему.',
+        code: `#include <iostream>
+
+// Факториал с проверкой базового случая
+long long factorial(int n) {
+    if (n <= 1) return 1;        // базовый случай (остановка)
+    return n * factorial(n - 1); // рекурсивный шаг
+}
+
+// Быстрое возведение в степень за O(log n)
+long long fastPow(long long base, int exp) {
+    if (exp == 0) return 1;
+    long long half = fastPow(base, exp / 2);
+    return (exp % 2 == 0) ? half * half : half * half * base;
+}
+
+int main() {
+    std::cout << "5! = " << factorial(5) << "\n";
+    std::cout << "2^10 = " << fastPow(2, 10) << "\n";
+    return 0;
+}`,
+        pitfall: 'Отсутствие базового случая или слишком большая глубина рекурсии (обычно > 10 000–50 000 вызовов) переполняет стек программы и вызывает Stack Overflow.',
+        examTip: 'Классический наивный Фибоначчи fib(n-1) + fib(n-2) работает за экспоненциальное время O(2^n) из-за повторных вычислений — на практике его заменяют циклом или мемоизацией за O(n).'
+      },
+      {
+        id: 'memory-move-semantics',
+        category: 'memory',
+        title: 'Move-семантика, rvalue-ссылки (&&) и std::move',
+        level: 'Продвинутый',
+        headers: ['<utility>', '<vector>', '<string>'],
+        summary: 'Вместо дорогого копирования временных объектов (rvalue) C++11 позволяет «переместить» их внутренние ресурсы (указатель на буфер). Функция std::move(x) не перемещает сама — она лишь преобразует x в rvalue-ссылку (T&&), разрешая забрать ресурсы.',
+        code: `#include <iostream>
+#include <string>
+#include <utility>
+#include <vector>
+
+int main() {
+    std::string big = "Очень длинная строка для лабораторной...";
+    std::vector<std::string> list;
+
+    // Копирование: выделяется новая память под дубликат строки
+    list.push_back(big);
+
+    // Перемещение: вектор просто забирает указатель на буфер big!
+    list.push_back(std::move(big));
+
+    // После std::move объект big валиден, но его содержимое не определено (обычно пусто)
+    std::cout << "После move длина big: " << big.size() << "\n";
+    return 0;
+}`,
+        pitfall: 'Не используйте переменную после std::move(x) так, будто в ней остались старые данные (кроме присваивания нового значения или уничтожения). Также не пишите return std::move(local); — это мешает оптимизации компилятора (NRVO).',
+        examTip: 'Lvalue — это объект с именем и адресом в памяти (живёт долго), rvalue — временное значение (например, x + y или результат функции), которое скоро исчезнет.'
+      },
+      {
+        id: 'structures-stack-queue-bst',
+        category: 'structures',
+        title: 'Стек, очередь и бинарное дерево поиска (BST)',
+        level: 'Средний',
+        headers: ['<stack>', '<queue>', '<iostream>'],
+        summary: 'Стек работает по принципу LIFO (последним вошёл — первым вышел), очередь — FIFO (первым вошёл — первым вышел). В бинарном дереве поиска (BST) левое поддерево содержит ключи меньше корня, правое — больше.',
+        code: `#include <iostream>
+#include <stack>
+#include <queue>
+
+struct TreeNode {
+    int key;
+    TreeNode* left = nullptr;
+    TreeNode* right = nullptr;
+};
+
+int main() {
+    std::stack<int> st;    // LIFO: push, top, pop за O(1)
+    st.push(10); st.push(20);
+    std::cout << "Вершина стека: " << st.top() << "\n"; // 20
+
+    std::queue<int> q;     // FIFO: push, front, pop за O(1)
+    q.push(10); q.push(20);
+    std::cout << "Первый в очереди: " << q.front() << "\n"; // 10
+    return 0;
+}`,
+        table: {
+          headers: ['Структура', 'Принцип', 'Поиск / Вставка', 'Применение в задачах'],
+          rows: [
+            ['Стек (std::stack)', 'LIFO', 'top/push/pop за O(1)', 'Проверка скобок, DFS, стек вызовов'],
+            ['Очередь (std::queue)', 'FIFO', 'front/push/pop за O(1)', 'Поиск в ширину (BFS), буфер задач'],
+            ['BST (сбалансированное)', 'left < root < right', 'O(log n) в среднем / O(n) в вырожденном', 'Упорядоченный поиск (в STL — std::set/map)']
+          ]
+        },
+        pitfall: 'Вызов st.top() или st.pop() у пустого стека (или q.front() у пустой очереди) — это Undefined Behavior! Всегда проверяйте if (!st.empty()).',
+        examTip: 'Метод pop() в std::stack и std::queue возвращает void (не возвращает удалённый элемент). Сначала прочитайте top()/front(), затем вызовите pop().'
+      },
+      {
+        id: 'oop-rule-of-five',
+        category: 'oop',
+        title: 'Правило трёх/пяти и запрет копирования (= delete)',
+        level: 'Продвинутый',
+        headers: ['<utility>', '<cstddef>'],
+        summary: 'Если класс вручную владеет ресурсом (сырой указатель, дескриптор файла), стандартное поверхностное копирование приведёт к двойному удалению (double free). Нужно либо реализовать глубокое копирование и перемещение (Правило пяти), либо запретить копирование через = delete.',
+        code: `#include <cstddef>
+#include <utility>
+
+class Buffer {
+    int* data_ = nullptr;
+    std::size_t size_ = 0;
+public:
+    explicit Buffer(std::size_t n) : data_(new int[n]{}), size_(n) {}
+    ~Buffer() { delete[] data_; } // 1. Деструктор
+
+    // Запрет копирования (2 и 3) — часто лучшее решение!
+    Buffer(const Buffer&) = delete;
+    Buffer& operator=(const Buffer&) = delete;
+
+    // 4. Конструктор перемещения
+    Buffer(Buffer&& other) noexcept
+        : data_(std::exchange(other.data_, nullptr)),
+          size_(std::exchange(other.size_, 0)) {}
+
+    // 5. Оператор перемещающего присваивания
+    Buffer& operator=(Buffer&& other) noexcept {
+        if (this != &other) {
+            delete[] data_;
+            data_ = std::exchange(other.data_, nullptr);
+            size_ = std::exchange(other.size_, 0);
+        }
+        return *this;
+    }
+};`,
+        pitfall: 'Если вы забыли проверку самоприсваивания (if (this != &other)) в операторе присваивания, выражение buf = std::move(buf) удалит собственный буфер до копирования.',
+        examTip: 'Правило нуля (Rule of Zero): если вместо сырых указателей использовать std::vector и std::unique_ptr, все 5 специальных методов компилятор сгенерирует сам!'
+      },
+      {
+        id: 'stl-iterators',
+        category: 'stl',
+        title: 'Итераторы, std::array и инвалидация итераторов',
+        level: 'Средний',
+        headers: ['<vector>', '<array>', '<iterator>'],
+        summary: 'Итератор — это обобщённый указатель для обхода любого контейнера STL (begin() указывает на первый элемент, end() — за последний). Для массивов фиксированного размера вместо C-массива int a[5] используйте std::array<int, 5>.',
+        code: `#include <array>
+#include <iostream>
+#include <vector>
+
+int main() {
+    std::array<int, 3> arr = {10, 20, 30}; // знает свой размер: arr.size()
+
+    std::vector<int> v = {1, 2, 3, 4, 5};
+    // Безопасное удаление чётных элементов при обходе итератором:
+    for (auto it = v.begin(); it != v.end(); ) {
+        if (*it % 2 == 0) {
+            it = v.erase(it); // erase возвращает валидный итератор на следующий!
+        } else {
+            ++it;
+        }
+    }
+    return 0;
+}`,
+        pitfall: 'Удаление элементов через v.erase(it) или вставка через v.push_back() во время range-based цикла for (int x : v) инвалидирует итераторы и вызывает падение или пропуск элементов.',
+        examTip: 'В C++20 для удаления по условию из вектора добавили удобную функцию std::erase_if(v, [](int x){ return x % 2 == 0; }); из <vector>.'
+      },
+      {
+        id: 'algorithms-search-sort',
+        category: 'algorithms',
+        title: 'Сортировка, бинарный поиск и предикаты STL',
+        level: 'Средний',
+        headers: ['<algorithm>', '<vector>'],
+        summary: 'Заголовок <algorithm> содержит десятки готовых алгоритмов: std::sort (O(n log n)), std::binary_search, std::lower_bound (первый элемент >= x за O(log n)), std::count_if, std::min_element и std::max_element.',
+        code: `#include <algorithm>
+#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<int> v = {40, 10, 30, 20, 30};
+    std::sort(v.begin(), v.end()); // {10, 20, 30, 30, 40}
+
+    // Бинарный поиск (работает ТОЛЬКО на отсортированном диапазоне!)
+    bool has20 = std::binary_search(v.begin(), v.end(), 20);
+    auto it = std::lower_bound(v.begin(), v.end(), 30); // указывает на первую 30
+    std::cout << "Найдено 20: " << has20 << ", индекс 30: " << (it - v.begin()) << "\n";
+
+    // Подсчёт элементов по условию (предикату)
+    auto cnt = std::count_if(v.begin(), v.end(), [](int x) { return x >= 30; });
+    std::cout << "Элементов >= 30: " << cnt << "\n";
+    return 0;
+}`,
+        pitfall: 'Вызов std::binary_search или std::lower_bound на неотсортированном векторе не выдаст ошибку компиляции, но вернёт неверный результат.',
+        examTip: 'Компаратор для std::sort(begin, end, cmp) должен задавать строгое слабое упорядочение: для равных элементов cmp(a, a) обязан возвращать false (используйте < или >, но не <=).'
+      },
+      {
+        id: 'modern-optional-variant',
+        category: 'modern',
+        title: 'std::optional, std::variant и structured bindings (C++17)',
+        level: 'Средний',
+        headers: ['<optional>', '<variant>', '<string>'],
+        summary: 'Вместо магических значений вроде -1 или nullptr используйте std::optional<T>, когда результат может отсутствовать. Для хранения одного из нескольких разнотипных значений в одной переменной используйте типобезопасный std::variant.',
+        code: `#include <iostream>
+#include <optional>
+#include <string>
+#include <utility>
+
+std::optional<int> parsePositive(const std::string& s) {
+    try {
+        int val = std::stoi(s);
+        if (val > 0) return val;
+    } catch (...) {}
+    return std::nullopt; // явное отсутствие значения
+}
+
+int main() {
+    if (auto res = parsePositive("42")) {
+        std::cout << "Число: " << *res << "\n";
+    } else {
+        std::cout << "Некорректный ввод\n";
+    }
+    std::cout << "Со значением по умолчанию: " << parsePositive("-5").value_or(1) << "\n";
+
+    // Structured bindings (распаковка пары/кортежа/структуры)
+    auto [id, name] = std::pair{101, std::string("Иван")};
+    std::cout << id << ": " << name << "\n";
+    return 0;
+}`,
+        pitfall: 'Разыменование пустого *opt (когда opt.has_value() == false) вызывает Undefined Behavior. Если нужно исключение при пустом значении — используйте opt.value() или безопасный opt.value_or(defaultVal).',
+        examTip: 'std::optional не выделяет память в куче (значение хранится прямо внутри объекта + 1 байт флага bool).'
+      },
+      {
+        id: 'concurrency-threads-mutex',
+        category: 'concurrency',
+        title: 'Потоки std::thread и защита данных (std::mutex)',
+        level: 'Продвинутый',
+        headers: ['<thread>', '<mutex>', '<iostream>'],
+        summary: 'std::thread запускает функцию в отдельном потоке. Перед завершением программы каждый поток нужно либо дождаться через join(), либо отсоединить через detach(). Для защиты общих переменных от гонки данных (data race) используют std::mutex и RAII-обёртку std::lock_guard.',
+        code: `#include <iostream>
+#include <mutex>
+#include <thread>
+
+int counter = 0;
+std::mutex mtx;
+
+void incrementMany() {
+    for (int i = 0; i < 10000; ++i) {
+        std::lock_guard<std::mutex> lock(mtx); // захват мьютекса (RAII)
+        ++counter;
+    } // lock автоматически освобождает mtx в деструкторе
+}
+
+int main() {
+    std::thread t1(incrementMany);
+    std::thread t2(incrementMany);
+    t1.join(); // ждём завершения потока t1
+    t2.join(); // ждём завершения потока t2
+    std::cout << "Итого counter = " << counter << "\n"; // ровно 20000
+    return 0;
+}`,
+        pitfall: 'Если объект std::thread уничтожается без вызова join() или detach() (когда joinable() == true), программа аварийно завершается через std::terminate(). В C++20 для авто-join появился std::jthread.',
+        examTip: 'Никогда не вызывайте mtx.lock() и mtx.unlock() вручную — при исключении unlock() не выполнится, и другие потоки зависнут (deadlock). Всегда оборачивайте мьютекс в std::lock_guard или std::scoped_lock.'
+      }
+    ];
+
+    const SIZEOF_DATA = {
+      win64: [
+        { type: 'bool / char', bytes: 1, range: 'true/false | -128..127 (или 0..255)' },
+        { type: 'short', bytes: 2, range: '-32 768 .. 32 767' },
+        { type: 'int', bytes: 4, range: '-2 147 483 648 .. 2 147 483 647' },
+        { type: 'long', bytes: 4, range: 'На Windows x64 long остаётся 4 байта!' },
+        { type: 'long long', bytes: 8, range: '±9.22 × 10¹⁸ (int64_t)' },
+        { type: 'float', bytes: 4, range: '~7 значащих цифр (IEEE 754)' },
+        { type: 'double', bytes: 8, range: '~15–16 значащих цифр' },
+        { type: 'void* / size_t', bytes: 8, range: '64-битный адрес памяти' }
+      ],
+      linux64: [
+        { type: 'bool / char', bytes: 1, range: 'true/false | -128..127' },
+        { type: 'short', bytes: 2, range: '-32 768 .. 32 767' },
+        { type: 'int', bytes: 4, range: '-2 147 483 648 .. 2 147 483 647' },
+        { type: 'long', bytes: 8, range: 'На Linux/macOS x64 (LP64) long = 8 байт' },
+        { type: 'long long', bytes: 8, range: '±9.22 × 10¹⁸ (int64_t)' },
+        { type: 'float', bytes: 4, range: '~7 значащих цифр (IEEE 754)' },
+        { type: 'double', bytes: 8, range: '~15–16 значащих цифр' },
+        { type: 'void* / size_t', bytes: 8, range: '64-битный адрес памяти' }
+      ],
+      x86: [
+        { type: 'bool / char', bytes: 1, range: 'true/false | -128..127' },
+        { type: 'short', bytes: 2, range: '-32 768 .. 32 767' },
+        { type: 'int', bytes: 4, range: '-2 147 483 648 .. 2 147 483 647' },
+        { type: 'long', bytes: 4, range: '32-битное целое' },
+        { type: 'long long', bytes: 8, range: '±9.22 × 10¹⁸' },
+        { type: 'float', bytes: 4, range: '~7 значащих цифр' },
+        { type: 'double', bytes: 8, range: '~15–16 значащих цифр' },
+        { type: 'void* / size_t', bytes: 4, range: '32-битный адрес (до 4 ГБ)' }
+      ]
+    };
+
+    const STL_CONTAINERS = [
+      { name: 'std::vector', header: '<vector>', access: 'O(1)', search: 'O(n)', insert: 'O(1)* / O(n)', impl: 'Динамический массив (непрерывная память)' },
+      { name: 'std::deque', header: '<deque>', access: 'O(1)', search: 'O(n)', insert: 'O(1) с концов / O(n)', impl: 'Блочный массив (двусторонняя очередь)' },
+      { name: 'std::list', header: '<list>', access: 'O(n)', search: 'O(n)', insert: 'O(1) по итератору', impl: 'Двусвязный список' },
+      { name: 'std::forward_list', header: '<forward_list>', access: 'O(n)', search: 'O(n)', insert: 'O(1) после итератора', impl: 'Односвязный список' },
+      { name: 'std::set', header: '<set>', access: '—', search: 'O(log n)', insert: 'O(log n)', impl: 'Красно-чёрное дерево (отсортировано)' },
+      { name: 'std::unordered_set', header: '<unordered_set>', access: '—', search: 'O(1) ср.', insert: 'O(1) ср.', impl: 'Хеш-таблица' },
+      { name: 'std::map', header: '<map>', access: 'O(log n)', search: 'O(log n)', insert: 'O(log n)', impl: 'Красно-чёрное дерево (ключ → значение)' },
+      { name: 'std::unordered_map', header: '<unordered_map>', access: 'O(1) ср.', search: 'O(1) ср.', insert: 'O(1) ср.', impl: 'Хеш-таблица (ключ → значение)' },
+      { name: 'std::priority_queue', header: '<queue>', access: 'O(1) top()', search: '—', insert: 'O(log n)', impl: 'Двоичная куча (max-heap по умолчанию)' }
+    ];
+
+    const STL_RECOMMENDATIONS = {
+      default: {
+        container: 'std::vector<T>',
+        reason: 'Выбор по умолчанию в C++. Элементы лежат в памяти подряд (дружелюбно к кэшу CPU), мгновенный доступ по индексу O(1) и амортизированный push_back за O(1).'
+      },
+      kv_fast: {
+        container: 'std::unordered_map<K, V>',
+        reason: 'Хеш-таблица даёт средний поиск и вставку за O(1). Отлично подходит для подсчёта частот, кэширования и словарей, когда порядок ключей не важен.'
+      },
+      kv_sorted: {
+        container: 'std::map<K, V>',
+        reason: 'Хранит ключи в отсортированном виде (красно-чёрное дерево). Поиск за O(log n), позволяет быстро брать диапазоны (lower_bound / upper_bound).'
+      },
+      unique: {
+        container: 'std::unordered_set<T> или std::set<T>',
+        reason: 'Автоматически исключают дубликаты. Берите unordered_set для максимальной скорости O(1), или set, если элементы должны быть отсортированы.'
+      },
+      ends: {
+        container: 'std::deque<T>',
+        reason: 'Поддерживает быструю вставку и удаление с обоих концов (push_front / push_back за O(1)) и при этом сохраняет доступ по индексу [i] за O(1).'
+      },
+      max: {
+        container: 'std::priority_queue<T>',
+        reason: 'Двоичная куча всегда держит максимальный элемент в top() за O(1), а добавление и извлечение работают за O(log n). Идеально для алгоритма Дейкстры и очередей задач.'
+      }
+    };
+
+    const COMPILER_ERRORS = [
+      {
+        id: 'undef-ref',
+        stage: 'Линковка',
+        title: 'undefined reference to `func()` / LNK2019',
+        cause: 'Функция или метод объявлены (есть прототип в .h), но линкер не нашёл их реализацию в .cpp или не подключена нужная библиотека.',
+        bad: `void printSum(int a, int b); // объявлено, но тела нигде нет
+
+int main() {
+    printSum(2, 3); // Ошибка линкера!
+}`,
+        good: `void printSum(int a, int b) { // есть реализация
+    std::cout << a + b << "\n";
+}
+
+int main() {
+    printSum(2, 3);
+}`
+      },
+      {
+        id: 'segfault',
+        stage: 'Запуск (Runtime)',
+        title: 'Segmentation fault (SIGSEGV) / Access Violation',
+        cause: 'Обращение к запрещённой области памяти: разыменование nullptr, выход за границы массива/вектора или чтение после delete.',
+        bad: `int* p = nullptr;
+*p = 10; // Падение: запись по нулевому адресу!`,
+        good: `int x = 0;
+int* p = &x;
+if (p != nullptr) {
+    *p = 10;
+}`
+      },
+      {
+        id: 'expected-semi',
+        stage: 'Компиляция',
+        title: "expected ';' before ... / missing ';'",
+        cause: 'Пропущена точка с запятой в конце предыдущей инструкции или после закрывающей скобки определения struct / class.',
+        bad: `struct Point {
+    int x, y;
+} // <-- забыта точка с запятой!
+
+int main() { return 0; }`,
+        good: `struct Point {
+    int x, y;
+};
+
+int main() { return 0; }`
+      },
+      {
+        id: 'undeclared',
+        stage: 'Компиляция',
+        title: "'vector' was not declared in this scope / undeclared identifier",
+        cause: 'Не подключён нужный заголовочный файл (#include <vector>), забыт префикс std:: или допущена опечатка в имени переменной.',
+        bad: `int main() {
+    vector<int> v = {1, 2, 3}; // нет #include и std::
+}`,
+        good: `#include <vector>
+
+int main() {
+    std::vector<int> v = {1, 2, 3};
+}`
+      },
+      {
+        id: 'cannot-convert',
+        stage: 'Компиляция',
+        title: "cannot convert 'Status' to 'int' / no viable conversion",
+        cause: 'Попытка неявно преобразовать несовместимые типы — например, enum class в int, std::string в const char* или const T* в T*.',
+        bad: `enum class Mode { Fast, Safe };
+int m = Mode::Fast; // enum class не приводится неявно`,
+        good: `enum class Mode { Fast, Safe };
+int m = static_cast<int>(Mode::Fast);`
+      },
+      {
+        id: 'double-free',
+        stage: 'Запуск (Runtime)',
+        title: 'double free or corruption / heap corruption',
+        cause: 'Повторный вызов delete для одного и того же указателя или вызов delete вместо delete[] для динамического массива.',
+        bad: `int* p = new int(5);
+delete p;
+delete p; // Повторное освобождение — аварийный краш!`,
+        good: `auto p = std::make_unique<int>(5); // RAII: освободится 1 раз`
+      }
+    ];
+
+    const STRUCT_TYPE_INFO = {
+      'char':   { size: 1, align: 1, color: 'bg-emerald-600 text-white border-emerald-700' },
+      'short':  { size: 2, align: 2, color: 'bg-sky-600 text-white border-sky-700' },
+      'int':    { size: 4, align: 4, color: 'bg-indigo-600 text-white border-indigo-700' },
+      'double': { size: 8, align: 8, color: 'bg-purple-600 text-white border-purple-700' },
+      'void*':  { size: 8, align: 8, color: 'bg-amber-600 text-white border-amber-700' }
+    };
+
+    const OPERATOR_PRECEDENCE = [
+      { rank: 1, ops: '::', desc: 'Разрешение области видимости (std::cout)' },
+      { rank: 2, ops: 'a++  a--  f()  a[i]  .  ->', desc: 'Постфиксные, вызов функции, индекс, доступ к полю' },
+      { rank: 3, ops: '++a  --a  !  ~  *p  &x  sizeof', desc: 'Унарные: префиксные, логическое/битовое НЕ, разыменование, адрес' },
+      { rank: 4, ops: '*  /  %', desc: 'Умножение, деление, остаток' },
+      { rank: 5, ops: '+  -', desc: 'Сложение и вычитание' },
+      { rank: 6, ops: '<<  >>', desc: 'Побитовые сдвиги (и потоки ввода-вывода)' },
+      { rank: 7, ops: '<  <=  >  >=', desc: 'Операторы сравнения (меньше / больше)' },
+      { rank: 8, ops: '==  !=', desc: 'Проверка равенства и неравенства' },
+      { rank: 9, ops: '&', desc: 'Побитовое И (AND) — ниже, чем == !' },
+      { rank: 10, ops: '^', desc: 'Побитовое исключающее ИЛИ (XOR)' },
+      { rank: 11, ops: '|', desc: 'Побитовое ИЛИ (OR)' },
+      { rank: 12, ops: '&&', desc: 'Логическое И (ленивое вычисление)' },
+      { rank: 13, ops: '||', desc: 'Логическое ИЛИ (ленивое вычисление)' },
+      { rank: 14, ops: '?:  =  +=  -=  *=', desc: 'Тернарный оператор и присваивания (справа налево)' },
+      { rank: 15, ops: ',', desc: 'Оператор запятая' }
+    ];
+
+    const QUIZ_QUESTIONS = [
+      {
+        category: 'control',
+        topic: 'Ветвления и циклы',
+        q: 'Сколько раз гарантированно выполнится тело цикла do { ... } while (false); ?',
+        options: ['0 раз', '1 раз', 'Бесконечно', 'Ошибка компиляции'],
+        answer: 1,
+        explanation: 'Цикл do-while проверяет условие ПОСЛЕ выполнения тела (постусловие), поэтому тело выполняется минимум один раз.'
+      },
+      {
+        category: 'enums',
+        topic: 'Перечисления (enum)',
+        q: 'Какое главное преимущество enum class (C++11) перед классическим enum?',
+        options: [
+          'Занимает 0 байт в памяти',
+          'Изолирует имена в области перечисления и запрещает неявное приведение к int',
+          'Может хранить строки std::string напрямую',
+          'Работает только внутри классов'
+        ],
+        answer: 1,
+        explanation: 'enum class предотвращает конфликт имён в глобальной области видимости и не даёт случайно сравнить элементы разных перечислений как числа int.'
+      },
+      {
+        category: 'memory',
+        topic: 'Указатели и память',
+        q: 'Как правильно освободить память, выделенную через int* a = new int[100]; ?',
+        options: ['delete a;', 'free(a);', 'delete[] a;', 'a = nullptr;'],
+        answer: 2,
+        explanation: 'Для массивов, выделенных через new[], обязательно использовать парный оператор delete[]. Вызов обычного delete — Undefined Behavior.'
+      },
+      {
+        category: 'structures',
+        topic: 'Связные списки',
+        q: 'Какова временная сложность вставки нового узла в НАЧАЛО односвязного списка (при наличии указателя head)?',
+        options: ['O(1)', 'O(log n)', 'O(n)', 'O(n²)'],
+        answer: 0,
+        explanation: 'Нужно лишь создать новый узел, направить его next на текущий head и обновить head — это константное число операций O(1).'
+      },
+      {
+        category: 'stl',
+        topic: 'Контейнеры STL',
+        q: 'Что произойдёт при обращении m["ivan"] к std::map<std::string, int> m, если ключа "ivan" в карте нет?',
+        options: [
+          'Выбросится исключение std::out_of_range',
+          'Вернётся nullptr',
+          'В карту автоматически вставится ключ "ivan" со значением 0',
+          'Программа завершится с ошибкой сегментации'
+        ],
+        answer: 2,
+        explanation: 'Оператор [] у std::map и std::unordered_map создаёт элемент со значением по умолчанию, если ключ отсутствует. Для безопасного чтения используйте .find() или .at().'
+      },
+      {
+        category: 'debug',
+        topic: 'Отладка и ошибки',
+        q: 'Что происходит с макросом assert(x > 0) при компиляции в режиме Release с флагом -DNDEBUG?',
+        options: [
+          'Он выбрасывает std::runtime_error',
+          'Он полностью удаляется препроцессором и не выполняется',
+          'Он записывает ошибку в лог-файл',
+          'Он замедляет программу вдвое'
+        ],
+        answer: 1,
+        explanation: 'При определённом макросе NDEBUG стандартный assert разворачивается в пустое выражение ((void)0), поэтому внутри assert нельзя писать код с побочными эффектами.'
+      },
+      {
+        category: 'oop',
+        topic: 'ООП и классы',
+        q: 'Зачем базовому полиморфному классу нужен виртуальный деструктор (virtual ~Base())?',
+        options: [
+          'Чтобы ускорить создание объектов',
+          'Чтобы при удалении наследника через указатель Base* корректно вызвался деструктор наследника',
+          'Чтобы запретить наследование от класса',
+          'Чтобы класс можно было передать в std::cout'
+        ],
+        answer: 1,
+        explanation: 'Без виртуального деструктора удаление производного объекта через указатель на базовый класс приводит к Undefined Behavior и утечке ресурсов наследника.'
+      },
+      {
+        category: 'functions',
+        topic: 'Функции и лямбды',
+        q: 'Как эффективнее всего передать большую строку std::string в функцию, если её нужно только прочитать?',
+        options: ['std::string s', 'const std::string& s', 'std::string* s', 'std::string&& s'],
+        answer: 1,
+        explanation: 'Передача по константной ссылке (const std::string&) избегает дорогого копирования строки и гарантирует, что функция не изменит оригинал.'
+      },
+      {
+        category: 'basics',
+        topic: 'Основы и типы',
+        q: 'К чему приводит переполнение знакового целого числа (signed int) в C++?',
+        options: [
+          'Всегда гарантированно переходит в INT_MIN',
+          'Выбрасывает исключение std::overflow_error',
+          'Undefined Behavior (неопределённое поведение)',
+          'Останавливается на INT_MAX (насыщение)'
+        ],
+        answer: 2,
+        explanation: 'По стандарту C++ переполнение signed-типов — это Undefined Behavior. Арифметика по модулю 2^n гарантирована только для unsigned-типов.'
+      },
+      {
+        category: 'memory',
+        topic: 'Указатели и память',
+        q: 'Какой умный указатель обеспечивает единоличное владение объектом и не может быть скопирован (только перемещён через std::move)?',
+        options: ['std::shared_ptr', 'std::weak_ptr', 'std::unique_ptr', 'std::auto_ptr'],
+        answer: 2,
+        explanation: 'std::unique_ptr имеет нулевые накладные расходы по сравнению с обычным указателем и гарантирует одного владельца ресурса.'
+      },
+      {
+        category: 'control',
+        topic: 'Ветвления и циклы',
+        q: 'Что делает оператор continue внутри цикла for?',
+        options: [
+          'Полностью завершает цикл',
+          'Прерывает текущую итерацию и переходит к шагу обновления счётчика следующей итерации',
+          'Перезапускает цикл с начального значения',
+          'Выходит из текущей функции'
+        ],
+        answer: 1,
+        explanation: 'continue пропускает оставшуюся часть тела цикла на текущем шаге и переходит к следующей итерации.'
+      },
+      {
+        category: 'stl',
+        topic: 'Контейнеры STL',
+        q: 'Какой заголовочный файл нужен для использования std::sort и std::find?',
+        options: ['<vector>', '<utility>', '<algorithm>', '<numeric>'],
+        answer: 2,
+        explanation: 'Большинство стандартных алгоритмов (sort, find, reverse, binary_search) находятся в <algorithm>. А в <numeric> лежат accumulate, iota, gcd.'
+      },
+      {
+        category: 'structures',
+        topic: 'Связные списки',
+        q: 'Какая ошибка возникает, если при удалении списка написать delete head; head = head->next; ?',
+        options: [
+          'Обращение к уже освобождённой памяти (Use-After-Free / UB)',
+          'Ошибка компиляции',
+          'Список удалится быстрее',
+          'Удалится только последний элемент'
+        ],
+        answer: 0,
+        explanation: 'После delete head память узла освобождена, читать из неё head->next нельзя. Сначала сохраните Node* next = head->next;.'
+      },
+      {
+        category: 'debug',
+        topic: 'Отладка и ошибки',
+        q: 'Какой инструмент компиляторов GCC/Clang автоматически ловит выход за границы массива и утечки памяти во время запуска?',
+        options: ['Prettier', 'AddressSanitizer (-fsanitize=address)', 'Doxygen', 'CMake'],
+        answer: 1,
+        explanation: 'AddressSanitizer (ASan) инструментирует код и мгновенно сообщает об ошибках памяти (heap-buffer-overflow, use-after-free, memory leaks) с точным указанием строки.'
+      },
+      {
+        category: 'oop',
+        topic: 'ООП и классы',
+        q: 'В чём единственное техническое отличие struct от class в C++?',
+        options: [
+          'В struct нельзя писать методы и конструкторы',
+          'struct не поддерживает наследование',
+          'У struct поля и наследование по умолчанию public, а у class — private',
+          'struct всегда хранится в куче'
+        ],
+        answer: 2,
+        explanation: 'В C++ структуры так же полноценны, как классы — единственная разница заключается в модификаторе доступа по умолчанию (public vs private).'
+      },
+      {
+        category: 'basics',
+        topic: 'Приведение типов',
+        q: 'Какой оператор приведения безопасно проверяет иерархию полиморфных классов во время выполнения (возвращает nullptr при неудаче)?',
+        options: ['static_cast', 'dynamic_cast', 'const_cast', 'reinterpret_cast'],
+        answer: 1,
+        explanation: 'dynamic_cast использует RTTI (требует хотя бы одну виртуальную функцию в базовом классе) и возвращает nullptr для указателей, если приведение невозможно.'
+      },
+      {
+        category: 'memory',
+        topic: 'Move-семантика',
+        q: 'Что на самом деле делает функция std::move(x)?',
+        options: [
+          'Мгновенно копирует память объекта x в кучу',
+          'Удаляет объект x из памяти',
+          'Преобразует x в rvalue-ссылку (T&&), разрешая перемещение его ресурсов',
+          'Автоматически очищает все указатели в программе'
+        ],
+        answer: 2,
+        explanation: 'std::move сама по себе ничего не перемещает в памяти — это приведение типа к rvalue-ссылке, чтобы сработал конструктор или оператор перемещения.'
+      },
+      {
+        category: 'algorithms',
+        topic: 'Алгоритмы и поиск',
+        q: 'Какое обязательное условие должно выполняться перед вызовом std::binary_search или std::lower_bound?',
+        options: [
+          'Контейнер должен быть std::list',
+          'Диапазон должен быть отсортирован',
+          'Все элементы должны быть уникальными',
+          'Размер вектора должен быть степенью двойки'
+        ],
+        answer: 1,
+        explanation: 'Бинарный поиск за O(log n) работает корректно только на отсортированном диапазоне.'
+      },
+      {
+        category: 'modern',
+        topic: 'Современный C++',
+        q: 'Какой тип C++17 лучше всего вернуть из функции поиска, если результат может отсутствовать?',
+        options: ['std::optional<T>', 'std::variant<T>', 'void*', 'std::tuple<T>'],
+        answer: 0,
+        explanation: 'std::optional<T> явно выражает возможное отсутствие значения без выделения памяти в куче и без магических чисел вроде -1.'
+      },
+      {
+        category: 'concurrency',
+        topic: 'Многопоточность',
+        q: 'Что произойдёт, если объект std::thread уничтожится, пока для него не вызвали join() или detach()?',
+        options: [
+          'Поток автоматически завершится в фоне',
+          'Программа аварийно завершится вызовом std::terminate()',
+          'Компилятор выдаст синтаксическую ошибку',
+          'Мьютекс заблокируется навсегда'
+        ],
+        answer: 1,
+        explanation: 'По стандарту C++ деструктор присоединяемого (joinable) std::thread вызывает std::terminate(). Используйте join(), detach() или std::jthread (C++20).'
+      }
+    ];
+
+    // =========================================================================
+    // 2. STATE MANAGEMENT (with try/catch localStorage)
+    // =========================================================================
+    const STORAGE_KEY = 'cpp_student_handbook_v1';
+
+    const state = {
+      view: 'reference', // reference | labs | quiz
+      activeLab: 'linkedlist', // linkedlist | memory | stl
+      category: 'all',
+      filterMode: 'all', // all | bookmarked | unlearned
+      level: 'all',
+      search: '',
+      theme: 'light', // 'light' = светло-серая, 'dark' = серая
+      codeSize: 'md', // sm | md | lg
+      learned: new Set(),
+      bookmarks: new Set(),
+      confirmReset: false,
+      // Linked List Lab
+      llNodes: [
+        { id: 1, val: 10, addr: '0x1040' },
+        { id: 2, val: 25, addr: '0x1088' },
+        { id: 3, val: 70, addr: '0x10C4' }
+      ],
+      llNextId: 4,
+      llAddrCounter: 0x1100,
+      llHighlightId: null,
+      llLastOp: 'init',
+      // Memory Lab
+      platform: 'win64',
+      overflowInput: 127,
+      // STL Lab
+      stlNeed: 'default',
+      stlSearch: '',
+      // Errors Lab
+      errSearch: '',
+      errStage: 'all',
+      // Struct Padding Lab
+      structFields: [
+        { id: 1, type: 'char', name: 'flag' },
+        { id: 2, type: 'double', name: 'value' },
+        { id: 3, type: 'char', name: 'tag' },
+        { id: 4, type: 'int', name: 'count' }
+      ],
+      structNextId: 5,
+      // Bitwise & Precedence Lab
+      bitA: 170,
+      bitB: 204,
+      bitOp: '&',
+      opSearch: '',
+      // Vector Memory Lab
+      vecItems: [],
+      vecCapacity: 0,
+      vecReallocs: 0,
+      vecAddrHex: 'nullptr',
+      vecAddrNum: 0x2000,
+      vecLastOp: 'init',
+      // Quiz
+      quizCategory: 'all',
+      quizList: [...QUIZ_QUESTIONS],
+      quizIndex: 0,
+      quizScore: 0,
+      quizAnswered: false
+    };
+
+    function loadSavedState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed.learned)) state.learned = new Set(parsed.learned);
+        if (Array.isArray(parsed.bookmarks)) state.bookmarks = new Set(parsed.bookmarks);
+        if (parsed.theme === 'dark' || parsed.theme === 'light') state.theme = parsed.theme;
+        if (['sm', 'md', 'lg'].includes(parsed.codeSize)) state.codeSize = parsed.codeSize;
+      } catch (e) {
+        // Ignore storage errors in restricted environments
+      }
+    }
+
+    function persistState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          learned: Array.from(state.learned),
+          bookmarks: Array.from(state.bookmarks),
+          theme: state.theme,
+          codeSize: state.codeSize
+        }));
+      } catch (e) {
+        // Ignore storage errors
+      }
+    }
+
+    // =========================================================================
+    // 3. UTILITIES: PLURALIZATION, SYNTAX HIGHLIGHTER, TOAST, CLIPBOARD
+    // =========================================================================
+    function pluralize(n, forms) {
+      const abs = Math.abs(n) % 100;
+      const last = abs % 10;
+      if (abs > 10 && abs < 20) return forms[2];
+      if (last > 1 && last < 5) return forms[1];
+      if (last === 1) return forms[0];
+      return forms[2];
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function highlightCpp(code) {
+      const escaped = escapeHtml(code);
+      const tokenRegex = /(\/\/[^\n]*)|(&quot;(?:\\.|(?!&quot;).)*?&quot;)|(#\s*(?:include|define|ifdef|ifndef|endif)\b[^\n]*)|\b(alignas|auto|break|case|catch|class|const|constexpr|continue|default|delete|do|else|enum|explicit|false|for|if|namespace|new|noexcept|nullptr|override|private|protected|public|return|sizeof|static_cast|struct|switch|template|this|throw|true|try|typename|using|virtual|void|while)\b|\b(bool|char|double|float|int|int8_t|int16_t|int32_t|int64_t|uint8_t|uint16_t|uint32_t|uint64_t|long|short|size_t|unsigned|signed|std::[a-zA-Z0-9_]+)\b|\b(\d+(?:\.\d+)?)\b/g;
+
+      return escaped.replace(tokenRegex, (match, cm, str, prep, kw, type, num) => {
+        if (cm) return `<span class="cpp-cm">${cm}</span>`;
+        if (str) return `<span class="cpp-str">${str}</span>`;
+        if (prep) return `<span class="cpp-prep">${prep}</span>`;
+        if (kw) return `<span class="cpp-kw">${kw}</span>`;
+        if (type) return `<span class="cpp-type">${type}</span>`;
+        if (num) return `<span class="cpp-num">${num}</span>`;
+        return match;
+      });
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      if (!toast) return;
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'translate-y-3');
+      toast.classList.add('opacity-100', 'translate-y-0');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-3');
+        toast.classList.remove('opacity-100', 'translate-y-0');
+      }, 2100);
+    }
+
+    function copyText(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text)
+          .then(() => showToast('Код скопирован в буфер обмена'))
+          .catch(() => fallbackCopy(text));
+      } else {
+        fallbackCopy(text);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        showToast('Код скопирован в буфер обмена');
+      } catch (e) {
+        showToast('Не удалось скопировать');
+      }
+      document.body.removeChild(ta);
+    }
+
+    // =========================================================================
+    // 4. THEME & LAYOUT HELPERS
+    // =========================================================================
+    function applyTheme() {
+      const root = document.documentElement;
+      if (state.theme === 'dark') {
+        root.classList.add('dark');
+      } else {
+        root.classList.remove('dark');
+      }
+    }
+
+    function applyCodeSize() {
+      document.body.classList.remove('code-size-sm', 'code-size-md', 'code-size-lg');
+      document.body.classList.add(`code-size-${state.codeSize}`);
+    }
+
+    function toggleMobileSidebar(open) {
+      const sidebar = document.getElementById('sidebar');
+      const backdrop = document.getElementById('mobileBackdrop');
+      if (open) {
+        sidebar.classList.remove('-translate-x-full');
+        backdrop.classList.remove('hidden');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+      }
+    }
+
+    // =========================================================================
+    // 5. RENDER: VIEWS & SIDEBAR
+    // =========================================================================
+    function renderViewTabs() {
+      document.querySelectorAll('.view-tab').forEach(btn => {
+        const active = btn.dataset.view === state.view;
+        btn.className = active
+          ? 'view-tab px-2.5 sm:px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-neutral-100 dark:bg-neutral-600 text-indigo-700 dark:text-indigo-200 shadow-sm transition-all'
+          : 'view-tab px-2.5 sm:px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-all';
+      });
+
+      document.getElementById('view-reference').classList.toggle('hidden', state.view !== 'reference');
+      document.getElementById('view-labs').classList.toggle('hidden', state.view !== 'labs');
+      document.getElementById('view-quiz').classList.toggle('hidden', state.view !== 'quiz');
+
+      // Show sidebar primarily for reference view on desktop
+      const sidebar = document.getElementById('sidebar');
+      if (state.view === 'reference') {
+        sidebar.classList.remove('lg:hidden');
+      } else {
+        sidebar.classList.add('lg:hidden');
+        toggleMobileSidebar(false);
+      }
+    }
+
+    function renderSidebar() {
+      const total = TOPICS.length;
+      const learnedCount = state.learned.size;
+      const pct = total > 0 ? Math.round((learnedCount / total) * 100) : 0;
+
+      document.getElementById('progressText').textContent = `${learnedCount} / ${total} (${pct}%)`;
+      document.getElementById('progressBar').style.width = `${pct}%`;
+      document.getElementById('bookmarkCountText').textContent = `Закладок: ${state.bookmarks.size}`;
+
+      // Filter pills
+      document.querySelectorAll('.filter-pill').forEach(pill => {
+        const active = pill.dataset.filter === state.filterMode;
+        pill.className = active
+          ? 'filter-pill px-2 py-1.5 rounded-lg text-xs font-semibold text-center bg-indigo-600 text-white transition-colors'
+          : 'filter-pill px-2 py-1.5 rounded-lg text-xs font-medium text-center bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 hover:bg-neutral-300 dark:hover:bg-neutral-500 transition-colors';
+      });
+
+      // Categories
+      const nav = document.getElementById('categoryNav');
+      nav.innerHTML = CATEGORIES.map(cat => {
+        const count = cat.id === 'all'
+          ? TOPICS.length
+          : TOPICS.filter(t => t.category === cat.id).length;
+        const active = state.category === cat.id;
+        return `
+          <button type="button" data-category="${cat.id}"
+            class="cat-btn w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm transition-colors ${
+              active
+                ? 'bg-indigo-100 dark:bg-indigo-500/30 text-indigo-800 dark:text-indigo-100 font-semibold'
+                : 'text-neutral-700 dark:text-neutral-200 hover:bg-neutral-200/80 dark:hover:bg-neutral-500/70 font-medium'
+            }">
+            <span class="flex items-center gap-2.5 truncate">
+              <span class="text-base leading-none">${cat.icon}</span>
+              <span class="truncate">${cat.name}</span>
+            </span>
+            <span class="text-xs px-1.5 py-0.5 rounded-md ${
+              active
+                ? 'bg-indigo-200/80 dark:bg-indigo-400/30 text-indigo-800 dark:text-indigo-100'
+                : 'bg-neutral-200 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300'
+            }">${count}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // 6. RENDER: REFERENCE CARDS
+    // =========================================================================
+    function getFilteredTopics() {
+      const q = state.search.trim().toLowerCase();
+      return TOPICS.filter(t => {
+        if (state.category !== 'all' && t.category !== state.category) return false;
+        if (state.level !== 'all' && t.level !== state.level) return false;
+        if (state.filterMode === 'bookmarked' && !state.bookmarks.has(t.id)) return false;
+        if (state.filterMode === 'unlearned' && state.learned.has(t.id)) return false;
+        if (q) {
+          const hay = [t.title, t.summary, t.code, t.pitfall, t.examTip, ...t.headers].join(' ').toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+    }
+
+    function renderReference() {
+      const catObj = CATEGORIES.find(c => c.id === state.category) || CATEGORIES[0];
+      document.getElementById('activeSectionTitle').textContent = `${catObj.icon} ${catObj.name}`;
+      document.getElementById('activeSectionDesc').textContent = catObj.desc;
+
+      const list = getFilteredTopics();
+      document.getElementById('resultsBadge').textContent = `${list.length} ${pluralize(list.length, ['тема', 'темы', 'тем'])}`;
+
+      const container = document.getElementById('cardsContainer');
+      const empty = document.getElementById('emptyState');
+
+      if (list.length === 0) {
+        container.innerHTML = '';
+        empty.classList.remove('hidden');
+        return;
+      }
+      empty.classList.add('hidden');
+
+      container.innerHTML = list.map(topic => {
+        const isLearned = state.learned.has(topic.id);
+        const isBookmarked = state.bookmarks.has(topic.id);
+        const levelColor = topic.level === 'База'
+          ? 'bg-emerald-100/80 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-200 border-emerald-300 dark:border-emerald-400/40'
+          : topic.level === 'Средний'
+            ? 'bg-sky-100/80 dark:bg-sky-500/20 text-sky-800 dark:text-sky-200 border-sky-300 dark:border-sky-400/40'
+            : 'bg-purple-100/80 dark:bg-purple-500/20 text-purple-800 dark:text-purple-200 border-purple-300 dark:border-purple-400/40';
+
+        const tableHtml = topic.table ? `
+          <div class="overflow-x-auto rounded-xl border border-neutral-300 dark:border-neutral-500">
+            <table class="w-full text-left text-xs sm:text-sm border-collapse">
+              <thead class="bg-neutral-200/80 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200">
+                <tr>${topic.table.headers.map(h => `<th class="py-2 px-3 font-semibold">${escapeHtml(h)}</th>`).join('')}</tr>
+              </thead>
+              <tbody class="divide-y divide-neutral-200 dark:divide-neutral-500/60">
+                ${topic.table.rows.map(row => `
+                  <tr class="hover:bg-neutral-200/50 dark:hover:bg-neutral-500/40">
+                    ${row.map((cell, idx) => `<td class="py-2 px-3 ${idx === 0 ? 'font-mono font-medium text-indigo-700 dark:text-indigo-200' : 'text-neutral-700 dark:text-neutral-200'}">${escapeHtml(cell)}</td>`).join('')}
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        ` : '';
+
+        return `
+          <article class="rounded-2xl border ${isLearned ? 'border-emerald-500/80 dark:border-emerald-400/70' : 'border-neutral-300 dark:border-neutral-500'} bg-neutral-100 dark:bg-neutral-600 p-4 sm:p-6 shadow-sm space-y-4 transition-colors">
+            <!-- Header -->
+            <div class="flex flex-wrap items-start justify-between gap-3">
+              <div class="space-y-1.5">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="px-2 py-0.5 rounded-md text-[11px] font-semibold border ${levelColor}">${topic.level}</span>
+                  ${topic.headers.map(h => `<code class="px-1.5 py-0.5 rounded bg-neutral-200 dark:bg-neutral-700 text-[11px] text-neutral-700 dark:text-neutral-200">${escapeHtml(h)}</code>`).join('')}
+                </div>
+                <h2 class="text-lg font-bold tracking-tight">${escapeHtml(topic.title)}</h2>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button type="button" data-action="bookmark" data-id="${topic.id}" title="В закладки"
+                  class="px-2.5 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
+                    isBookmarked
+                      ? 'bg-amber-100 dark:bg-amber-500/25 border-amber-400 dark:border-amber-400/60 text-amber-800 dark:text-amber-200'
+                      : 'border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 hover:bg-neutral-300/70 dark:hover:bg-neutral-500'
+                  }">
+                  ${isBookmarked ? '★ В закладках' : '☆ Закладка'}
+                </button>
+                <button type="button" data-action="learned" data-id="${topic.id}" title="Отметить изученным"
+                  class="px-2.5 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
+                    isLearned
+                      ? 'bg-emerald-600 border-emerald-600 text-white'
+                      : 'border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 hover:bg-neutral-300/70 dark:hover:bg-neutral-500'
+                  }">
+                  ${isLearned ? '✓ Изучено' : 'Отметить'}
+                </button>
+              </div>
+            </div>
+
+            <!-- Summary -->
+            <p class="text-sm text-neutral-700 dark:text-neutral-200 leading-relaxed">${escapeHtml(topic.summary)}</p>
+
+            <!-- Code Block -->
+            <div class="rounded-xl overflow-hidden bg-neutral-200/90 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-500 transition-colors">
+              <div class="flex items-center justify-between px-3.5 py-2 bg-neutral-300/70 dark:bg-neutral-700/80 border-b border-neutral-300 dark:border-neutral-500">
+                <span class="text-[11px] font-mono text-neutral-600 dark:text-neutral-300">example.cpp</span>
+                <button type="button" data-action="copy" data-id="${topic.id}"
+                  class="px-2.5 py-1 rounded-md bg-neutral-100 hover:bg-neutral-50 dark:bg-neutral-600 dark:hover:bg-neutral-500 text-neutral-800 dark:text-neutral-100 border border-neutral-300 dark:border-neutral-500 text-xs font-medium transition-colors">
+                  Копировать
+                </button>
+              </div>
+              <pre class="p-4 text-neutral-900 dark:text-neutral-100 overflow-x-auto"><code>${highlightCpp(topic.code)}</code></pre>
+            </div>
+
+            ${tableHtml}
+
+            <!-- Callouts: Pitfall & Exam Tip -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+              <div class="rounded-xl p-3.5 bg-rose-100/70 dark:bg-rose-500/20 border border-rose-300/80 dark:border-rose-400/40">
+                <div class="text-xs font-bold text-rose-800 dark:text-rose-200 mb-1">⚠️ Частая ошибка</div>
+                <p class="text-xs sm:text-sm text-neutral-800 dark:text-neutral-100 leading-relaxed">${escapeHtml(topic.pitfall)}</p>
+              </div>
+              <div class="rounded-xl p-3.5 bg-indigo-100/70 dark:bg-indigo-500/20 border border-indigo-300/80 dark:border-indigo-400/40">
+                <div class="text-xs font-bold text-indigo-800 dark:text-indigo-200 mb-1">🎓 На экзамене</div>
+                <p class="text-xs sm:text-sm text-neutral-800 dark:text-neutral-100 leading-relaxed">${escapeHtml(topic.examTip)}</p>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // 7. RENDER: LABS
+    // =========================================================================
+    function renderLabTabs() {
+      document.querySelectorAll('.lab-tab').forEach(btn => {
+        const active = btn.dataset.lab === state.activeLab;
+        btn.className = active
+          ? 'lab-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-neutral-100 dark:bg-neutral-700 text-indigo-700 dark:text-indigo-200 shadow-sm transition-all'
+          : 'lab-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-all';
+      });
+      document.querySelectorAll('.lab-panel').forEach(panel => {
+        panel.classList.toggle('hidden', panel.id !== `lab-${state.activeLab}`);
+      });
+    }
+
+    // --- LAB 1: LINKED LIST ---
+    function nextAddrHex() {
+      state.llAddrCounter += 0x34 + Math.floor(Math.random() * 4) * 8;
+      return '0x' + state.llAddrCounter.toString(16).toUpperCase();
+    }
+
+    function renderLinkedList() {
+      const canvas = document.getElementById('llCanvas');
+      document.getElementById('llCountBadge').textContent = `Узлов: ${state.llNodes.length}`;
+
+      let html = `
+        <div class="shrink-0 flex flex-col items-center mr-1">
+          <div class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white font-mono text-xs font-bold">head</div>
+          <div class="text-[10px] font-mono text-neutral-600 dark:text-neutral-300 mt-1">${state.llNodes.length ? state.llNodes[0].addr : 'nullptr'}</div>
+        </div>
+        <div class="text-neutral-500 dark:text-neutral-300 font-mono text-lg shrink-0">→</div>
+      `;
+
+      if (state.llNodes.length === 0) {
+        html += `<div class="px-3.5 py-2 rounded-xl border border-dashed border-neutral-400 dark:border-neutral-500 font-mono text-xs text-neutral-600 dark:text-neutral-300">nullptr (список пуст)</div>`;
+      } else {
+        state.llNodes.forEach((node, idx) => {
+          const nextAddr = idx < state.llNodes.length - 1 ? state.llNodes[idx + 1].addr : 'nullptr';
+          const isHl = node.id === state.llHighlightId;
+          html += `
+            <div class="node-pop shrink-0 rounded-xl border-2 ${isHl ? 'border-emerald-500 ring-2 ring-emerald-500/30' : 'border-neutral-400 dark:border-neutral-500'} bg-neutral-100 dark:bg-neutral-600 overflow-hidden shadow-sm">
+              <div class="px-2.5 py-0.5 bg-neutral-200 dark:bg-neutral-700 text-[10px] font-mono text-neutral-600 dark:text-neutral-300 text-center border-b border-neutral-300 dark:border-neutral-500">
+                ${node.addr}
+              </div>
+              <div class="flex divide-x divide-neutral-300 dark:divide-neutral-500">
+                <div class="px-3 py-2 text-center">
+                  <div class="text-[10px] text-neutral-500 dark:text-neutral-300 font-mono">data</div>
+                  <div class="font-mono font-bold text-sm text-indigo-700 dark:text-indigo-200">${node.val}</div>
+                </div>
+                <div class="px-2.5 py-2 text-center">
+                  <div class="text-[10px] text-neutral-500 dark:text-neutral-300 font-mono">next</div>
+                  <div class="font-mono text-xs text-neutral-700 dark:text-neutral-200">${nextAddr}</div>
+                </div>
+              </div>
+            </div>
+            <div class="text-neutral-500 dark:text-neutral-300 font-mono text-lg shrink-0">→</div>
+          `;
+        });
+        html += `<div class="px-3 py-1.5 rounded-lg bg-neutral-300/80 dark:bg-neutral-800 font-mono text-xs text-neutral-700 dark:text-neutral-300 shrink-0">nullptr</div>`;
+      }
+
+      canvas.innerHTML = html;
+
+      const codeMap = {
+        init: `struct Node {\n    int data;\n    Node* next;\n};\nNode* head = new Node{10, ...};`,
+        pushFront: `Node* node = new Node{val, head};\nhead = node; // O(1) — без обхода списка`,
+        pushBack: `if (head == nullptr) {\n    head = new Node{val, nullptr};\n} else {\n    Node* cur = head;\n    while (cur->next != nullptr) cur = cur->next;\n    cur->next = new Node{val, nullptr}; // O(n)\n}`,
+        popFront: `if (head != nullptr) {\n    Node* tmp = head;\n    head = head->next;\n    delete tmp; // освобождаем память\n}`,
+        find: `for (Node* cur = head; cur != nullptr; cur = cur->next) {\n    if (cur->data == target) return cur;\n}\nreturn nullptr;`,
+        clear: `while (head != nullptr) {\n    Node* tmp = head;\n    head = head->next;\n    delete tmp;\n}`
+      };
+      document.getElementById('llCodePreview').innerHTML = highlightCpp(codeMap[state.llLastOp] || codeMap.init);
+    }
+
+    // --- LAB 2: MEMORY & OVERFLOW ---
+    function renderSizeofTable() {
+      const rows = SIZEOF_DATA[state.platform] || SIZEOF_DATA.win64;
+      document.getElementById('sizeofTableBody').innerHTML = rows.map(r => `
+        <tr>
+          <td class="py-2 pr-2 font-semibold text-indigo-700 dark:text-indigo-200">${escapeHtml(r.type)}</td>
+          <td class="py-2 px-2"><span class="px-1.5 py-0.5 rounded bg-neutral-200 dark:bg-neutral-700 text-neutral-800 dark:text-neutral-100">${r.bytes}</span></td>
+          <td class="py-2 pl-2 font-sans text-neutral-700 dark:text-neutral-200">${escapeHtml(r.range)}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderOverflowSim() {
+      const raw = Number(state.overflowInput);
+      const safeRaw = Number.isFinite(raw) ? Math.trunc(raw) : 0;
+      const uint8 = ((safeRaw % 256) + 256) % 256;
+      const int8 = uint8 >= 128 ? uint8 - 256 : uint8;
+      const bits = uint8.toString(2).padStart(8, '0');
+
+      const bitBoxes = document.getElementById('bitBoxes');
+      bitBoxes.innerHTML = bits.split('').map((b, i) => `
+        <div class="rounded-lg py-2 text-center font-mono font-bold text-sm border ${
+          b === '1'
+            ? (i === 0 ? 'bg-rose-600 text-white border-rose-600' : 'bg-indigo-600 text-white border-indigo-600')
+            : 'bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 border-neutral-300 dark:border-neutral-500'
+        }">
+          <div>${b}</div>
+          <div class="text-[9px] font-normal opacity-80 mt-0.5">${i === 0 ? 'знак' : 7 - i}</div>
+        </div>
+      `).join('');
+
+      document.getElementById('uint8Val').textContent = String(uint8);
+      document.getElementById('int8Val').textContent = String(int8);
+
+      const uWarn = document.getElementById('uint8Warn');
+      if (safeRaw < 0 || safeRaw > 255) {
+        uWarn.textContent = `Переполнение по модулю 256 (${safeRaw} → ${uint8})`;
+        uWarn.className = 'text-[11px] mt-1 text-amber-700 dark:text-amber-300 font-medium';
+      } else {
+        uWarn.textContent = 'В пределах диапазона';
+        uWarn.className = 'text-[11px] mt-1 text-emerald-700 dark:text-emerald-300';
+      }
+
+      const iWarn = document.getElementById('int8Warn');
+      if (safeRaw < -128 || safeRaw > 127) {
+        iWarn.textContent = `Вне -128..127! В C++ это UB (в памяти: ${int8})`;
+        iWarn.className = 'text-[11px] mt-1 text-rose-700 dark:text-rose-300 font-medium';
+      } else {
+        iWarn.textContent = 'В пределах диапазона';
+        iWarn.className = 'text-[11px] mt-1 text-emerald-700 dark:text-emerald-300';
+      }
+    }
+
+    // --- LAB 3: STL & BIG-O ---
+    function renderStlLab() {
+      document.querySelectorAll('.stl-need-btn').forEach(btn => {
+        const active = btn.dataset.need === state.stlNeed;
+        btn.className = active
+          ? 'stl-need-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold border border-indigo-600 bg-indigo-600 text-white transition-colors'
+          : 'stl-need-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium border border-neutral-300 dark:border-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 hover:bg-neutral-300/70 dark:hover:bg-neutral-500 transition-colors';
+      });
+
+      const rec = STL_RECOMMENDATIONS[state.stlNeed] || STL_RECOMMENDATIONS.default;
+      document.getElementById('stlRecommendation').innerHTML = `
+        <div class="font-mono font-bold text-indigo-800 dark:text-indigo-200 text-base mb-1">Рекомендуемый контейнер: ${escapeHtml(rec.container)}</div>
+        <p class="text-neutral-800 dark:text-neutral-100 leading-relaxed">${escapeHtml(rec.reason)}</p>
+      `;
+
+      const q = state.stlSearch.trim().toLowerCase();
+      const filtered = STL_CONTAINERS.filter(c =>
+        !q || [c.name, c.header, c.impl].join(' ').toLowerCase().includes(q)
+      );
+
+      if (filtered.length === 0) {
+        document.getElementById('stlTableBody').innerHTML = `
+          <tr>
+            <td colspan="6" class="py-6 text-center text-sm text-neutral-600 dark:text-neutral-300">
+              Контейнеры по запросу «${escapeHtml(state.stlSearch)}» не найдены.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      document.getElementById('stlTableBody').innerHTML = filtered.map(c => `
+        <tr class="hover:bg-neutral-200/60 dark:hover:bg-neutral-500/40">
+          <td class="py-2.5 pr-3 font-mono font-semibold text-indigo-700 dark:text-indigo-200">${escapeHtml(c.name)}</td>
+          <td class="py-2.5 px-2 font-mono text-xs text-neutral-600 dark:text-neutral-300">${escapeHtml(c.header)}</td>
+          <td class="py-2.5 px-2 font-mono text-xs">${escapeHtml(c.access)}</td>
+          <td class="py-2.5 px-2 font-mono text-xs">${escapeHtml(c.search)}</td>
+          <td class="py-2.5 px-2 font-mono text-xs">${escapeHtml(c.insert)}</td>
+          <td class="py-2.5 pl-2 text-xs text-neutral-700 dark:text-neutral-200">${escapeHtml(c.impl)}</td>
+        </tr>
+      `).join('');
+    }
+
+    // --- LAB 4: COMPILER ERRORS ---
+    function renderErrorsLab() {
+      const q = state.errSearch.trim().toLowerCase();
+      const filtered = COMPILER_ERRORS.filter(err => {
+        if (state.errStage !== 'all' && err.stage !== state.errStage) return false;
+        if (q) {
+          const hay = [err.title, err.cause, err.stage, err.bad, err.good].join(' ').toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      const container = document.getElementById('errorsContainer');
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="py-10 text-center text-sm text-neutral-600 dark:text-neutral-300 rounded-xl border border-dashed border-neutral-400 dark:border-neutral-500">Ошибки по запросу не найдены.</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(err => {
+        const stageCls = err.stage === 'Компиляция'
+          ? 'bg-amber-100/80 dark:bg-amber-500/20 text-amber-800 dark:text-amber-200 border-amber-300 dark:border-amber-400/40'
+          : err.stage === 'Линковка'
+            ? 'bg-purple-100/80 dark:bg-purple-500/20 text-purple-800 dark:text-purple-200 border-purple-300 dark:border-purple-400/40'
+            : 'bg-rose-100/80 dark:bg-rose-500/20 text-rose-800 dark:text-rose-200 border-rose-300 dark:border-rose-400/40';
+        return `
+          <div class="rounded-xl border border-neutral-300 dark:border-neutral-500 bg-neutral-200/50 dark:bg-neutral-700/60 p-4 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <code class="text-xs sm:text-sm font-bold text-rose-700 dark:text-rose-200 break-all">${escapeHtml(err.title)}</code>
+              <span class="px-2 py-0.5 rounded-md text-[11px] font-semibold border ${stageCls}">${escapeHtml(err.stage)}</span>
+            </div>
+            <p class="text-xs sm:text-sm text-neutral-700 dark:text-neutral-200">${escapeHtml(err.cause)}</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div class="min-w-0 rounded-xl bg-neutral-200/90 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 border border-rose-300 dark:border-rose-400/40 p-3 overflow-x-auto transition-colors">
+                <div class="text-[11px] font-semibold text-rose-700 dark:text-rose-300 mb-1">✕ Проблемный код</div>
+                <pre class="text-xs leading-relaxed"><code>${highlightCpp(err.bad)}</code></pre>
+              </div>
+              <div class="min-w-0 rounded-xl bg-neutral-200/90 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 border border-emerald-400/80 dark:border-emerald-400/40 p-3 overflow-x-auto transition-colors">
+                <div class="text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 mb-1">✓ Исправление</div>
+                <pre class="text-xs leading-relaxed"><code>${highlightCpp(err.good)}</code></pre>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // --- LAB 5: STRUCT PADDING ---
+    function renderStructLab() {
+      const fieldsEl = document.getElementById('structFieldsList');
+      if (state.structFields.length === 0) {
+        fieldsEl.innerHTML = `<div class="p-3 rounded-xl border border-dashed border-neutral-400 dark:border-neutral-500 text-xs text-neutral-600 dark:text-neutral-300 text-center">Добавьте хотя бы одно поле выше. Пустая структура в C++ занимает 1 байт.</div>`;
+      } else {
+        fieldsEl.innerHTML = state.structFields.map((f, idx) => {
+          const info = STRUCT_TYPE_INFO[f.type];
+          return `
+            <div class="flex items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-neutral-200/70 dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-500 text-xs">
+              <div class="flex items-center gap-2 font-mono">
+                <span class="px-1.5 py-0.5 rounded font-semibold ${info.color}">${escapeHtml(f.type)}</span>
+                <span class="text-neutral-800 dark:text-neutral-100">${escapeHtml(f.name)};</span>
+                <span class="text-neutral-500 dark:text-neutral-300">(${info.size} Б)</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <button type="button" data-struct-move="up" data-idx="${idx}" ${idx === 0 ? 'disabled' : ''}
+                  class="px-1.5 py-0.5 rounded border border-neutral-300 dark:border-neutral-500 hover:bg-neutral-300 dark:hover:bg-neutral-500 disabled:opacity-35">↑</button>
+                <button type="button" data-struct-move="down" data-idx="${idx}" ${idx === state.structFields.length - 1 ? 'disabled' : ''}
+                  class="px-1.5 py-0.5 rounded border border-neutral-300 dark:border-neutral-500 hover:bg-neutral-300 dark:hover:bg-neutral-500 disabled:opacity-35">↓</button>
+                <button type="button" data-struct-del="${f.id}"
+                  class="px-1.5 py-0.5 rounded border border-rose-300 dark:border-rose-400/50 text-rose-700 dark:text-rose-200 hover:bg-rose-200/70 dark:hover:bg-rose-500/30">✕</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Compute memory layout
+      const cells = [];
+      let offset = 0;
+      let maxAlign = 1;
+      let dataBytes = 0;
+
+      if (state.structFields.length === 0) {
+        cells.push({ kind: 'pad', label: 'empty' });
+        offset = 1;
+      } else {
+        state.structFields.forEach(f => {
+          const info = STRUCT_TYPE_INFO[f.type];
+          if (info.align > maxAlign) maxAlign = info.align;
+          const pad = (info.align - (offset % info.align)) % info.align;
+          for (let p = 0; p < pad; p++) {
+            cells.push({ kind: 'pad', label: 'pad' });
+          }
+          offset += pad;
+          for (let b = 0; b < info.size; b++) {
+            cells.push({ kind: 'data', label: b === 0 ? f.name.slice(0, 4) : '·', color: info.color, title: `${f.type} ${f.name} (байт ${b + 1}/${info.size})` });
+          }
+          offset += info.size;
+          dataBytes += info.size;
+        });
+        const tailPad = (maxAlign - (offset % maxAlign)) % maxAlign;
+        for (let p = 0; p < tailPad; p++) {
+          cells.push({ kind: 'pad', label: 'pad' });
+        }
+        offset += tailPad;
+      }
+
+      const paddingBytes = Math.max(0, offset - dataBytes);
+      document.getElementById('structDataBytes').textContent = `${dataBytes} Б`;
+      document.getElementById('structPaddingBytes').textContent = `${paddingBytes} Б`;
+      document.getElementById('structTotalBytes').textContent = `${offset} Б`;
+      document.getElementById('structAlignText').textContent = `alignof: ${maxAlign}`;
+
+      document.getElementById('structByteGrid').innerHTML = cells.map((c, idx) => {
+        if (c.kind === 'pad') {
+          return `<div title="Padding (байт ${idx})" class="rounded-md py-1.5 text-center font-mono text-[10px] border border-dashed border-neutral-400 dark:border-neutral-500 bg-neutral-200/80 dark:bg-neutral-700/80 text-neutral-500 dark:text-neutral-400">${c.label}</div>`;
+        }
+        return `<div title="${escapeHtml(c.title)} (смещение +${idx})" class="rounded-md py-1.5 text-center font-mono text-[10px] font-semibold border ${c.color} truncate px-0.5">${escapeHtml(c.label)}</div>`;
+      }).join('');
+
+      const codeLines = state.structFields.length
+        ? state.structFields.map(f => `    ${f.type} ${f.name};`).join('\n')
+        : '    // пустая структура';
+      const structCode = `struct MyStruct {\n${codeLines}\n};\n// sizeof(MyStruct) == ${offset}, alignof(MyStruct) == ${maxAlign}`;
+      document.getElementById('structCodePreview').innerHTML = highlightCpp(structCode);
+    }
+
+    // --- LAB 6: BITWISE CALCULATOR & OPERATOR PRECEDENCE ---
+    function renderBitwiseLab() {
+      const a = Math.max(0, Math.min(255, Math.trunc(Number(state.bitA) || 0)));
+      const isShift = state.bitOp === '<<' || state.bitOp === '>>';
+      const isUnary = state.bitOp === '~';
+      const bMax = isShift ? 7 : 255;
+      const b = Math.max(0, Math.min(bMax, Math.trunc(Number(state.bitB) || 0)));
+
+      const bWrap = document.getElementById('bitInputBWrap');
+      const bLabel = document.getElementById('bitInputBLabel');
+      const bInput = document.getElementById('bitInputB');
+      bWrap.classList.toggle('opacity-40', isUnary);
+      bInput.disabled = isUnary;
+      bInput.max = String(bMax);
+      bLabel.textContent = isShift ? 'Сдвиг k (0..7)' : 'Число B (0..255)';
+
+      let res = 0;
+      let expr = '';
+      if (state.bitOp === '&') { res = a & b; expr = `uint8_t r = ${a} & ${b}; // ${res} (0x${res.toString(16).toUpperCase().padStart(2, '0')})`; }
+      else if (state.bitOp === '|') { res = a | b; expr = `uint8_t r = ${a} | ${b}; // ${res} (0x${res.toString(16).toUpperCase().padStart(2, '0')})`; }
+      else if (state.bitOp === '^') { res = a ^ b; expr = `uint8_t r = ${a} ^ ${b}; // ${res} (0x${res.toString(16).toUpperCase().padStart(2, '0')})`; }
+      else if (state.bitOp === '~') { res = (~a) & 255; expr = `uint8_t r = static_cast<uint8_t>(~${a}); // ${res} (0x${res.toString(16).toUpperCase().padStart(2, '0')})`; }
+      else if (state.bitOp === '<<') { res = (a << b) & 255; expr = `uint8_t r = static_cast<uint8_t>(${a} << ${b}); // ${res} (0x${res.toString(16).toUpperCase().padStart(2, '0')})`; }
+      else if (state.bitOp === '>>') { res = (a >> b) & 255; expr = `uint8_t r = ${a} >> ${b}; // ${res} (0x${res.toString(16).toUpperCase().padStart(2, '0')})`; }
+
+      const renderRow = (label, val, accent) => {
+        const bits = val.toString(2).padStart(8, '0').split('');
+        return `
+          <div class="flex items-center gap-2">
+            <span class="w-12 text-xs font-mono font-semibold text-neutral-600 dark:text-neutral-300 shrink-0">${label}</span>
+            <div class="grid grid-cols-8 gap-1 flex-1">
+              ${bits.map(bit => `
+                <div class="py-1 rounded text-center font-mono text-xs font-bold border ${
+                  bit === '1'
+                    ? accent
+                    : 'bg-neutral-100 dark:bg-neutral-600 text-neutral-500 dark:text-neutral-300 border-neutral-300 dark:border-neutral-500'
+                }">${bit}</div>
+              `).join('')}
+            </div>
+            <span class="w-16 text-right text-xs font-mono text-neutral-700 dark:text-neutral-200 shrink-0">${val} (0x${val.toString(16).toUpperCase().padStart(2, '0')})</span>
+          </div>
+        `;
+      };
+
+      let rowsHtml = renderRow('A', a, 'bg-sky-600 text-white border-sky-700');
+      if (!isUnary && !isShift) {
+        rowsHtml += renderRow('B', b, 'bg-purple-600 text-white border-purple-700');
+      } else if (isShift) {
+        rowsHtml += `<div class="text-xs font-mono text-neutral-600 dark:text-neutral-300 pl-14">Сдвиг ${state.bitOp === '<<' ? 'влево' : 'вправо'} на ${b} бит(а)</div>`;
+      }
+      rowsHtml += `<div class="border-t border-neutral-300 dark:border-neutral-500 my-1"></div>`;
+      rowsHtml += renderRow('Res', res, 'bg-indigo-600 text-white border-indigo-700');
+
+      document.getElementById('bitCalcVisual').innerHTML = rowsHtml;
+      document.getElementById('bitCodePreview').innerHTML = highlightCpp(expr);
+
+      // Operator precedence table
+      const q = state.opSearch.trim().toLowerCase();
+      const filteredOps = OPERATOR_PRECEDENCE.filter(o =>
+        !q || [o.ops, o.desc, String(o.rank)].join(' ').toLowerCase().includes(q)
+      );
+
+      if (filteredOps.length === 0) {
+        document.getElementById('opTableBody').innerHTML = `<tr><td colspan="3" class="py-5 text-center text-neutral-600 dark:text-neutral-300">Операторы не найдены.</td></tr>`;
+        return;
+      }
+
+      document.getElementById('opTableBody').innerHTML = filteredOps.map(o => `
+        <tr class="hover:bg-neutral-200/60 dark:hover:bg-neutral-500/40">
+          <td class="py-2 px-2.5 font-mono text-neutral-500 dark:text-neutral-300">${o.rank}</td>
+          <td class="py-2 px-2.5 font-mono font-semibold text-indigo-700 dark:text-indigo-200 whitespace-nowrap">${escapeHtml(o.ops)}</td>
+          <td class="py-2 px-2.5 text-neutral-700 dark:text-neutral-200">${escapeHtml(o.desc)}</td>
+        </tr>
+      `).join('');
+    }
+
+    // --- LAB 7: STD::VECTOR MEMORY VISUALIZER ---
+    function nextVecAddr() {
+      state.vecAddrNum += 0x80 + Math.floor(Math.random() * 4) * 16;
+      return '0x' + state.vecAddrNum.toString(16).toUpperCase();
+    }
+
+    function renderVectorLab() {
+      document.getElementById('vecSizeBadge').textContent = `size: ${state.vecItems.length}`;
+      document.getElementById('vecCapBadge').textContent = `capacity: ${state.vecCapacity}`;
+      document.getElementById('vecReallocBadge').textContent = `реаллокаций: ${state.vecReallocs}`;
+      document.getElementById('vecAddrText').textContent = state.vecCapacity > 0 ? state.vecAddrHex : 'nullptr';
+
+      const grid = document.getElementById('vecBufferGrid');
+      if (state.vecCapacity === 0) {
+        grid.innerHTML = `<div class="px-3.5 py-2 rounded-xl border border-dashed border-neutral-400 dark:border-neutral-500 font-mono text-xs text-neutral-600 dark:text-neutral-300">Буфер ещё не выделен (capacity == 0)</div>`;
+      } else {
+        const slots = [];
+        for (let i = 0; i < state.vecCapacity; i++) {
+          if (i < state.vecItems.length) {
+            slots.push(`
+              <div class="node-pop shrink-0 w-12 rounded-lg border-2 border-indigo-600 bg-indigo-600 text-white text-center py-1.5 shadow-sm">
+                <div class="text-[9px] font-mono opacity-80">[${i}]</div>
+                <div class="font-mono font-bold text-sm">${state.vecItems[i]}</div>
+              </div>
+            `);
+          } else {
+            slots.push(`
+              <div class="shrink-0 w-12 rounded-lg border border-dashed border-neutral-400 dark:border-neutral-400 bg-neutral-100/70 dark:bg-neutral-600/70 text-neutral-500 dark:text-neutral-300 text-center py-1.5">
+                <div class="text-[9px] font-mono opacity-75">[${i}]</div>
+                <div class="font-mono text-xs">—</div>
+              </div>
+            `);
+          }
+        }
+        grid.innerHTML = slots.join('');
+      }
+
+      const codeMap = {
+        init: `std::vector<int> v;\n// v.size() == 0, v.capacity() == 0`,
+        pushNoRealloc: `v.push_back(val); // O(1) — в буфере уже было место!\n// size=${state.vecItems.length}, capacity=${state.vecCapacity}`,
+        pushRealloc: `v.push_back(val); // РЕАЛЛОКАЦИЯ: новый буфер ${state.vecCapacity} эл.\n// Старые указатели и итераторы инвалидированы!`,
+        pop: `v.pop_back(); // size уменьшен, capacity (${state.vecCapacity}) не меняется`,
+        reserve: `v.reserve(8); // заранее выделили буфер под 8 элементов\n// Теперь push_back до 8 эл. пройдёт без реаллокаций!`,
+        shrink: `v.shrink_to_fit(); // освободили лишний резерв\n// size=${state.vecItems.length}, capacity=${state.vecCapacity}`,
+        clear: `v.clear(); // size = 0, но буфер (capacity=${state.vecCapacity}) сохранён`
+      };
+      document.getElementById('vecCodePreview').innerHTML = highlightCpp(codeMap[state.vecLastOp] || codeMap.init);
+    }
+
+    // =========================================================================
+    // 8. RENDER: QUIZ
+    // =========================================================================
+    function populateQuizCategories() {
+      const sel = document.getElementById('quizCategorySelect');
+      const usedCats = new Set(QUIZ_QUESTIONS.map(q => q.category));
+      const opts = [`<option value="all">Все темы (${QUIZ_QUESTIONS.length} ${pluralize(QUIZ_QUESTIONS.length, ['вопрос', 'вопроса', 'вопросов'])})</option>`];
+      CATEGORIES.forEach(c => {
+        if (usedCats.has(c.id)) {
+          const cnt = QUIZ_QUESTIONS.filter(q => q.category === c.id).length;
+          opts.push(`<option value="${c.id}">${c.name} (${cnt})</option>`);
+        }
+      });
+      sel.innerHTML = opts.join('');
+    }
+
+    function resetQuiz() {
+      state.quizList = state.quizCategory === 'all'
+        ? [...QUIZ_QUESTIONS]
+        : QUIZ_QUESTIONS.filter(q => q.category === state.quizCategory);
+      state.quizIndex = 0;
+      state.quizScore = 0;
+      state.quizAnswered = false;
+      document.getElementById('quizCard').classList.remove('hidden');
+      document.getElementById('quizSummary').classList.add('hidden');
+      renderQuizQuestion();
+    }
+
+    function renderQuizQuestion() {
+      const total = state.quizList.length;
+      if (total === 0) return;
+
+      if (state.quizIndex >= total) {
+        document.getElementById('quizCard').classList.add('hidden');
+        document.getElementById('quizSummary').classList.remove('hidden');
+        const pct = Math.round((state.quizScore / total) * 100);
+        document.getElementById('quizSummaryEmoji').textContent = pct >= 80 ? '🏆' : pct >= 50 ? '👍' : '📖';
+        document.getElementById('quizSummaryTitle').textContent = `Результат: ${state.quizScore} из ${total} (${pct}%)`;
+        document.getElementById('quizSummaryText').textContent = pct >= 80
+          ? 'Отличная подготовка! Можно смело идти на зачёт или экзамен.'
+          : pct >= 50
+            ? 'Хорошая база, но стоит повторить сложные моменты в справочнике.'
+            : 'Рекомендуем пробежаться по карточкам справочника и пройти тест снова.';
+        return;
+      }
+
+      const item = state.quizList[state.quizIndex];
+      document.getElementById('quizCounter').textContent = `Вопрос ${state.quizIndex + 1} из ${total}`;
+      document.getElementById('quizScore').textContent = `Счёт: ${state.quizScore}`;
+      document.getElementById('quizProgressBar').style.width = `${Math.round((state.quizIndex / total) * 100)}%`;
+      document.getElementById('quizTopicTag').textContent = item.topic;
+
+      const fb = document.getElementById('quizFeedback');
+      fb.classList.add('hidden');
+      const nextBtn = document.getElementById('quizNextBtn');
+      nextBtn.disabled = true;
+      nextBtn.textContent = state.quizIndex === total - 1 ? 'Завершить тест' : 'Следующий вопрос →';
+
+      document.getElementById('quizBody').innerHTML = `
+        <h3 class="text-base sm:text-lg font-bold leading-snug">${escapeHtml(item.q)}</h3>
+        <div class="space-y-2.5">
+          ${item.options.map((opt, idx) => `
+            <button type="button" data-qopt="${idx}"
+              class="quiz-opt-btn w-full text-left px-4 py-3 rounded-xl border border-neutral-300 dark:border-neutral-500 bg-neutral-200/50 dark:bg-neutral-700/80 hover:border-indigo-500 dark:hover:border-indigo-300 hover:bg-indigo-100/60 dark:hover:bg-indigo-500/20 text-sm transition-all flex items-start gap-3">
+              <span class="w-6 h-6 rounded-md bg-neutral-300/80 dark:bg-neutral-600 text-neutral-800 dark:text-neutral-100 font-mono text-xs font-bold flex items-center justify-center shrink-0">${idx + 1}</span>
+              <span>${escapeHtml(opt)}</span>
+            </button>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function handleQuizAnswer(selectedIdx) {
+      if (state.quizAnswered) return;
+      state.quizAnswered = true;
+
+      const total = state.quizList.length;
+      const item = state.quizList[state.quizIndex];
+      const isCorrect = selectedIdx === item.answer;
+      if (isCorrect) state.quizScore += 1;
+
+      document.getElementById('quizScore').textContent = `Счёт: ${state.quizScore}`;
+      document.getElementById('quizProgressBar').style.width = `${Math.round(((state.quizIndex + 1) / total) * 100)}%`;
+
+      document.querySelectorAll('.quiz-opt-btn').forEach(btn => {
+        const idx = Number(btn.dataset.qopt);
+        btn.disabled = true;
+        btn.classList.remove(
+          'hover:border-indigo-500',
+          'dark:hover:border-indigo-300',
+          'hover:bg-indigo-100/60',
+          'dark:hover:bg-indigo-500/20'
+        );
+        btn.classList.add('cursor-default');
+        if (idx === item.answer) {
+          btn.classList.add('border-emerald-600', 'dark:border-emerald-400', 'bg-emerald-100/80', 'dark:bg-emerald-500/25', 'text-emerald-900', 'dark:text-emerald-100', 'font-medium');
+        } else if (idx === selectedIdx && !isCorrect) {
+          btn.classList.add('border-rose-600', 'dark:border-rose-400', 'bg-rose-100/80', 'dark:bg-rose-500/25', 'text-rose-900', 'dark:text-rose-100');
+        } else {
+          btn.classList.add('opacity-50');
+        }
+      });
+
+      const fb = document.getElementById('quizFeedback');
+      fb.className = isCorrect
+        ? 'rounded-xl p-4 text-sm border bg-emerald-100/80 dark:bg-emerald-500/20 border-emerald-400 dark:border-emerald-400/50'
+        : 'rounded-xl p-4 text-sm border bg-rose-100/80 dark:bg-rose-500/20 border-rose-400 dark:border-rose-400/50';
+      fb.innerHTML = isCorrect
+        ? `<div class="font-bold text-emerald-800 dark:text-emerald-200 mb-1">✓ Верно!</div><p class="text-neutral-800 dark:text-neutral-100">${escapeHtml(item.explanation)}</p>`
+        : `<div class="font-bold text-rose-800 dark:text-rose-200 mb-1">✕ Неверно</div><p class="text-neutral-800 dark:text-neutral-100">${escapeHtml(item.explanation)}</p>`;
+
+      document.getElementById('quizNextBtn').disabled = false;
+    }
+
+    // =========================================================================
+    // 9. EVENT LISTENERS & INIT
+    // =========================================================================
+    let resetConfirmTimer = null;
+
+    function bindEvents() {
+      // View switcher
+      document.querySelectorAll('.view-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.view = btn.dataset.view;
+          renderViewTabs();
+        });
+      });
+
+      // Theme toggle (Светло-серая / Серая)
+      document.getElementById('themeToggleBtn').addEventListener('click', () => {
+        state.theme = state.theme === 'dark' ? 'light' : 'dark';
+        applyTheme();
+        persistState();
+        showToast(state.theme === 'dark' ? 'Включена серая тема' : 'Включена светло-серая тема');
+      });
+
+      // Code font size toggle
+      document.getElementById('fontSizeBtn').addEventListener('click', () => {
+        const order = ['sm', 'md', 'lg'];
+        state.codeSize = order[(order.indexOf(state.codeSize) + 1) % order.length];
+        applyCodeSize();
+        persistState();
+        showToast(`Размер кода: ${state.codeSize.toUpperCase()}`);
+      });
+
+      // Mobile menu
+      document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+        const sidebar = document.getElementById('sidebar');
+        const isClosed = sidebar.classList.contains('-translate-x-full');
+        if (state.view !== 'reference') {
+          state.view = 'reference';
+          renderViewTabs();
+        }
+        toggleMobileSidebar(isClosed);
+      });
+      document.getElementById('mobileBackdrop').addEventListener('click', () => toggleMobileSidebar(false));
+
+      // Sidebar: Category click (delegation)
+      document.getElementById('categoryNav').addEventListener('click', e => {
+        const btn = e.target.closest('.cat-btn');
+        if (!btn) return;
+        state.category = btn.dataset.category;
+        renderSidebar();
+        renderReference();
+        toggleMobileSidebar(false);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      // Sidebar: Filter pills
+      document.querySelectorAll('.filter-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+          state.filterMode = pill.dataset.filter;
+          renderSidebar();
+          renderReference();
+        });
+      });
+
+      // Reset progress (2-step inline confirmation)
+      const resetBtn = document.getElementById('resetProgressBtn');
+      resetBtn.addEventListener('click', () => {
+        if (!state.confirmReset) {
+          state.confirmReset = true;
+          resetBtn.textContent = 'Точно сбросить?';
+          resetBtn.classList.add('text-rose-600', 'dark:text-rose-300', 'font-semibold');
+          if (resetConfirmTimer) clearTimeout(resetConfirmTimer);
+          resetConfirmTimer = setTimeout(() => {
+            state.confirmReset = false;
+            resetBtn.textContent = 'Сбросить';
+            resetBtn.classList.remove('text-rose-600', 'dark:text-rose-300', 'font-semibold');
+          }, 3000);
+          return;
+        }
+        if (resetConfirmTimer) clearTimeout(resetConfirmTimer);
+        state.confirmReset = false;
+        resetBtn.textContent = 'Сбросить';
+        resetBtn.classList.remove('text-rose-600', 'dark:text-rose-300', 'font-semibold');
+        state.learned.clear();
+        state.bookmarks.clear();
+        persistState();
+        renderSidebar();
+        renderReference();
+        showToast('Прогресс и закладки сброшены');
+      });
+
+      // Search & Level filter
+      const searchInput = document.getElementById('searchInput');
+      const clearSearchBtn = document.getElementById('clearSearchBtn');
+      searchInput.addEventListener('input', e => {
+        state.search = e.target.value;
+        clearSearchBtn.classList.toggle('hidden', !state.search);
+        renderReference();
+      });
+      clearSearchBtn.addEventListener('click', () => {
+        state.search = '';
+        searchInput.value = '';
+        clearSearchBtn.classList.add('hidden');
+        renderReference();
+        searchInput.focus();
+      });
+      document.getElementById('levelFilter').addEventListener('change', e => {
+        state.level = e.target.value;
+        renderReference();
+      });
+      document.getElementById('resetAllFiltersBtn').addEventListener('click', () => {
+        state.category = 'all';
+        state.filterMode = 'all';
+        state.level = 'all';
+        state.search = '';
+        searchInput.value = '';
+        clearSearchBtn.classList.add('hidden');
+        document.getElementById('levelFilter').value = 'all';
+        renderSidebar();
+        renderReference();
+      });
+
+      // Print cheat-sheet button
+      document.getElementById('printBtn').addEventListener('click', () => {
+        if (state.view !== 'reference') {
+          state.view = 'reference';
+          renderViewTabs();
+        }
+        toggleMobileSidebar(false);
+        setTimeout(() => window.print(), 60);
+      });
+
+      // Global keyboard shortcuts: '/' (search), 'Escape' (close/blur), '1-4' & 'Enter' (quiz)
+      document.addEventListener('keydown', e => {
+        const tag = document.activeElement ? document.activeElement.tagName : '';
+        const inField = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
+
+        if (e.key === 'Escape') {
+          toggleMobileSidebar(false);
+          if (document.activeElement === searchInput) {
+            searchInput.blur();
+          }
+          return;
+        }
+
+        if (inField || e.ctrlKey || e.metaKey || e.altKey) return;
+
+        if (e.key === '/' && state.view === 'reference') {
+          e.preventDefault();
+          searchInput.focus();
+          return;
+        }
+
+        if (state.view === 'quiz' && state.quizIndex < state.quizList.length) {
+          if (['1', '2', '3', '4'].includes(e.key) && !state.quizAnswered) {
+            const idx = Number(e.key) - 1;
+            const optBtn = document.querySelector(`.quiz-opt-btn[data-qopt="${idx}"]`);
+            if (optBtn) {
+              e.preventDefault();
+              handleQuizAnswer(idx);
+            }
+          } else if (e.key === 'Enter' && state.quizAnswered) {
+            const nextBtn = document.getElementById('quizNextBtn');
+            if (nextBtn && !nextBtn.disabled) {
+              e.preventDefault();
+              nextBtn.click();
+            }
+          }
+        }
+      });
+
+      // Reference card actions (delegation)
+      document.getElementById('cardsContainer').addEventListener('click', e => {
+        const btn = e.target.closest('button[data-action]');
+        if (!btn) return;
+        const { action, id } = btn.dataset;
+        const topic = TOPICS.find(t => t.id === id);
+        if (!topic) return;
+
+        if (action === 'copy') {
+          copyText(topic.code);
+        } else if (action === 'bookmark') {
+          if (state.bookmarks.has(id)) {
+            state.bookmarks.delete(id);
+            showToast('Убрано из закладок');
+          } else {
+            state.bookmarks.add(id);
+            showToast('Добавлено в закладки');
+          }
+          persistState();
+          renderSidebar();
+          renderReference();
+        } else if (action === 'learned') {
+          if (state.learned.has(id)) {
+            state.learned.delete(id);
+          } else {
+            state.learned.add(id);
+            showToast('Тема отмечена как изученная');
+          }
+          persistState();
+          renderSidebar();
+          renderReference();
+        }
+      });
+
+      // Lab tabs
+      document.querySelectorAll('.lab-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.activeLab = btn.dataset.lab;
+          renderLabTabs();
+        });
+      });
+
+      // Lab 1: Linked List controls
+      const getVal = () => {
+        const v = parseInt(document.getElementById('llValueInput').value, 10);
+        return Number.isNaN(v) ? 0 : v;
+      };
+
+      const pushFront = () => {
+        if (state.llNodes.length >= 10) {
+          showToast('Для наглядности максимум 10 узлов');
+          return;
+        }
+        const val = getVal();
+        const node = { id: state.llNextId++, val, addr: nextAddrHex() };
+        state.llNodes.unshift(node);
+        state.llHighlightId = node.id;
+        state.llLastOp = 'pushFront';
+        document.getElementById('llStatusText').textContent = `Узел (${val}) по адресу ${node.addr} добавлен в начало списка. Указатель head обновлён за O(1).`;
+        renderLinkedList();
+      };
+
+      document.getElementById('llPushFrontBtn').addEventListener('click', pushFront);
+      document.getElementById('llValueInput').addEventListener('keydown', e => {
+        if (e.key === 'Enter') pushFront();
+      });
+
+      document.getElementById('llPushBackBtn').addEventListener('click', () => {
+        if (state.llNodes.length >= 10) {
+          showToast('Для наглядности максимум 10 узлов');
+          return;
+        }
+        const val = getVal();
+        const node = { id: state.llNextId++, val, addr: nextAddrHex() };
+        const steps = state.llNodes.length;
+        state.llNodes.push(node);
+        state.llHighlightId = node.id;
+        state.llLastOp = 'pushBack';
+        document.getElementById('llStatusText').textContent = `Пройдено узлов: ${steps}. Новый узел (${val}) по адресу ${node.addr} привязан в конец списка за O(n).`;
+        renderLinkedList();
+      });
+
+      document.getElementById('llPopFrontBtn').addEventListener('click', () => {
+        if (state.llNodes.length === 0) {
+          showToast('Список уже пуст');
+          return;
+        }
+        const removed = state.llNodes.shift();
+        state.llHighlightId = null;
+        state.llLastOp = 'popFront';
+        document.getElementById('llStatusText').textContent = `Удалён головной узел (${removed.val}) по адресу ${removed.addr}. Память освобождена через delete.`;
+        renderLinkedList();
+      });
+
+      document.getElementById('llFindBtn').addEventListener('click', () => {
+        const target = getVal();
+        const idx = state.llNodes.findIndex(n => n.val === target);
+        state.llLastOp = 'find';
+        if (idx !== -1) {
+          const found = state.llNodes[idx];
+          const steps = idx + 1;
+          state.llHighlightId = found.id;
+          document.getElementById('llStatusText').textContent = `Найдено значение ${target} на позиции #${idx} (адрес ${found.addr}) за ${steps} ${pluralize(steps, ['шаг', 'шага', 'шагов'])}.`;
+        } else {
+          state.llHighlightId = null;
+          document.getElementById('llStatusText').textContent = `Значение ${target} не найдено после обхода всех ${state.llNodes.length} ${pluralize(state.llNodes.length, ['узла', 'узлов', 'узлов'])} (возвращён nullptr).`;
+        }
+        renderLinkedList();
+      });
+
+      document.getElementById('llClearBtn').addEventListener('click', () => {
+        const count = state.llNodes.length;
+        state.llNodes = [];
+        state.llHighlightId = null;
+        state.llLastOp = 'clear';
+        document.getElementById('llStatusText').textContent = `Освобождено узлов: ${count}. Указатель head установлен в nullptr, утечек памяти нет.`;
+        renderLinkedList();
+      });
+
+      // Lab 2: Memory & Overflow controls
+      document.getElementById('platformSelect').addEventListener('change', e => {
+        state.platform = e.target.value;
+        renderSizeofTable();
+      });
+
+      const syncOverflow = val => {
+        const num = Number.isFinite(Number(val)) ? Math.max(-32768, Math.min(32768, Math.trunc(Number(val)))) : 0;
+        state.overflowInput = num;
+        document.getElementById('overflowNumberInput').value = num;
+        const clamped = Math.max(-150, Math.min(280, num));
+        document.getElementById('overflowSlider').value = clamped;
+        renderOverflowSim();
+      };
+
+      document.getElementById('overflowSlider').addEventListener('input', e => syncOverflow(Number(e.target.value)));
+      document.getElementById('overflowNumberInput').addEventListener('input', e => {
+        if (e.target.value === '' || e.target.value === '-') return;
+        syncOverflow(Number(e.target.value));
+      });
+      document.getElementById('overflowNumberInput').addEventListener('blur', e => {
+        if (e.target.value === '' || e.target.value === '-') {
+          syncOverflow(state.overflowInput);
+        }
+      });
+      document.getElementById('ovDecBtn').addEventListener('click', () => syncOverflow(Number(state.overflowInput) - 1));
+      document.getElementById('ovIncBtn').addEventListener('click', () => syncOverflow(Number(state.overflowInput) + 1));
+
+      // Lab 3: STL controls
+      document.getElementById('stlNeedButtons').addEventListener('click', e => {
+        const btn = e.target.closest('.stl-need-btn');
+        if (!btn) return;
+        state.stlNeed = btn.dataset.need;
+        renderStlLab();
+      });
+      document.getElementById('stlSearchInput').addEventListener('input', e => {
+        state.stlSearch = e.target.value;
+        renderStlLab();
+      });
+
+      // Lab 4: Compiler Errors controls
+      document.getElementById('errSearchInput').addEventListener('input', e => {
+        state.errSearch = e.target.value;
+        renderErrorsLab();
+      });
+      document.getElementById('errStageSelect').addEventListener('change', e => {
+        state.errStage = e.target.value;
+        renderErrorsLab();
+      });
+
+      // Lab 5: Struct Padding controls
+      document.querySelectorAll('.struct-add-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (state.structFields.length >= 8) {
+            showToast('Максимум 8 полей для наглядности');
+            return;
+          }
+          const t = btn.dataset.addType;
+          const id = state.structNextId++;
+          state.structFields.push({ id, type: t, name: `f${id}` });
+          renderStructLab();
+        });
+      });
+
+      document.getElementById('structFieldsList').addEventListener('click', e => {
+        const delBtn = e.target.closest('button[data-struct-del]');
+        if (delBtn) {
+          const id = Number(delBtn.dataset.structDel);
+          state.structFields = state.structFields.filter(f => f.id !== id);
+          renderStructLab();
+          return;
+        }
+        const moveBtn = e.target.closest('button[data-struct-move]');
+        if (moveBtn) {
+          const idx = Number(moveBtn.dataset.idx);
+          const dir = moveBtn.dataset.structMove;
+          const target = dir === 'up' ? idx - 1 : idx + 1;
+          if (target >= 0 && target < state.structFields.length) {
+            const tmp = state.structFields[idx];
+            state.structFields[idx] = state.structFields[target];
+            state.structFields[target] = tmp;
+            renderStructLab();
+          }
+        }
+      });
+
+      document.getElementById('structOptimizeBtn').addEventListener('click', () => {
+        state.structFields.sort((a, b) => STRUCT_TYPE_INFO[b.type].align - STRUCT_TYPE_INFO[a.type].align);
+        renderStructLab();
+        showToast('Поля отсортированы по убыванию выравнивания');
+      });
+
+      document.getElementById('structResetBtn').addEventListener('click', () => {
+        state.structFields = [
+          { id: 1, type: 'char', name: 'flag' },
+          { id: 2, type: 'double', name: 'value' },
+          { id: 3, type: 'char', name: 'tag' },
+          { id: 4, type: 'int', name: 'count' }
+        ];
+        state.structNextId = 5;
+        renderStructLab();
+      });
+
+      // Lab 6: Bitwise & Precedence controls
+      document.getElementById('bitInputA').addEventListener('input', e => {
+        state.bitA = e.target.value;
+        renderBitwiseLab();
+      });
+      document.getElementById('bitInputB').addEventListener('input', e => {
+        state.bitB = e.target.value;
+        renderBitwiseLab();
+      });
+      document.getElementById('bitOpSelect').addEventListener('change', e => {
+        state.bitOp = e.target.value;
+        if ((state.bitOp === '<<' || state.bitOp === '>>') && Number(state.bitB) > 7) {
+          state.bitB = 2;
+          document.getElementById('bitInputB').value = 2;
+        }
+        renderBitwiseLab();
+      });
+      document.getElementById('opSearchInput').addEventListener('input', e => {
+        state.opSearch = e.target.value;
+        renderBitwiseLab();
+      });
+
+      // Progress Export / Import JSON
+      document.getElementById('exportProgressBtn').addEventListener('click', () => {
+        const payload = {
+          version: 1,
+          exportedAt: new Date().toISOString(),
+          learned: Array.from(state.learned),
+          bookmarks: Array.from(state.bookmarks),
+          theme: state.theme,
+          codeSize: state.codeSize
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'cpp_handbook_progress.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('Прогресс сохранён в JSON');
+      });
+
+      const importFileInput = document.getElementById('importProgressFile');
+      document.getElementById('importProgressBtn').addEventListener('click', () => {
+        importFileInput.value = '';
+        importFileInput.click();
+      });
+
+      importFileInput.addEventListener('change', e => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const parsed = JSON.parse(String(reader.result || ''));
+            if (!parsed || typeof parsed !== 'object') throw new Error('Invalid JSON');
+            const validIds = new Set(TOPICS.map(t => t.id));
+            if (Array.isArray(parsed.learned)) {
+              state.learned = new Set(parsed.learned.filter(id => validIds.has(id)));
+            }
+            if (Array.isArray(parsed.bookmarks)) {
+              state.bookmarks = new Set(parsed.bookmarks.filter(id => validIds.has(id)));
+            }
+            if (parsed.theme === 'dark' || parsed.theme === 'light') {
+              state.theme = parsed.theme;
+              applyTheme();
+            }
+            if (['sm', 'md', 'lg'].includes(parsed.codeSize)) {
+              state.codeSize = parsed.codeSize;
+              applyCodeSize();
+            }
+            persistState();
+            renderSidebar();
+            renderReference();
+            showToast(`Импортировано: изучено ${state.learned.size}, закладок ${state.bookmarks.size}`);
+          } catch (err) {
+            showToast('Ошибка: выберите корректный JSON-файл прогресса');
+          }
+        };
+        reader.readAsText(file);
+      });
+
+      // Lab 7: Vector Memory controls
+      document.getElementById('vecPushBtn').addEventListener('click', () => {
+        if (state.vecItems.length >= 16) {
+          showToast('Для наглядности максимум 16 элементов');
+          return;
+        }
+        const raw = parseInt(document.getElementById('vecValueInput').value, 10);
+        const val = Number.isNaN(raw) ? 0 : raw;
+        let reallocated = false;
+        if (state.vecItems.length >= state.vecCapacity) {
+          state.vecCapacity = state.vecCapacity === 0 ? 1 : state.vecCapacity * 2;
+          state.vecReallocs += 1;
+          state.vecAddrHex = nextVecAddr();
+          reallocated = true;
+        }
+        state.vecItems.push(val);
+        document.getElementById('vecValueInput').value = val + 1;
+        state.vecLastOp = reallocated ? 'pushRealloc' : 'pushNoRealloc';
+        document.getElementById('vecStatusText').textContent = reallocated
+          ? `Буфер переполнился! Выделена новая память (${state.vecCapacity} слотов) по адресу ${state.vecAddrHex}, элементы скопированы, добавлен ${val}.`
+          : `Элемент ${val} записан в свободный слот за O(1) без реаллокации. Адрес ${state.vecAddrHex} не изменился.`;
+        renderVectorLab();
+      });
+
+      document.getElementById('vecPopBtn').addEventListener('click', () => {
+        if (state.vecItems.length === 0) {
+          showToast('Вектор уже пуст');
+          return;
+        }
+        const removed = state.vecItems.pop();
+        state.vecLastOp = 'pop';
+        document.getElementById('vecStatusText').textContent = `Удалён последний элемент (${removed}). size стал ${state.vecItems.length}, а capacity (${state.vecCapacity}) осталась прежней.`;
+        renderVectorLab();
+      });
+
+      document.getElementById('vecReserveBtn').addEventListener('click', () => {
+        if (state.vecCapacity >= 8) {
+          showToast(`capacity уже ${state.vecCapacity} (>= 8)`);
+          return;
+        }
+        state.vecCapacity = 8;
+        state.vecReallocs += 1;
+        state.vecAddrHex = nextVecAddr();
+        state.vecLastOp = 'reserve';
+        document.getElementById('vecStatusText').textContent = `Выполнен reserve(8): заранее выделен буфер по адресу ${state.vecAddrHex}. Теперь до 8 элементов добавятся без единой реаллокации!`;
+        renderVectorLab();
+      });
+
+      document.getElementById('vecShrinkBtn').addEventListener('click', () => {
+        if (state.vecCapacity === state.vecItems.length) {
+          showToast('Лишнего резерва нет');
+          return;
+        }
+        state.vecCapacity = state.vecItems.length;
+        if (state.vecCapacity > 0) {
+          state.vecReallocs += 1;
+          state.vecAddrHex = nextVecAddr();
+        } else {
+          state.vecAddrHex = 'nullptr';
+        }
+        state.vecLastOp = 'shrink';
+        document.getElementById('vecStatusText').textContent = `shrink_to_fit() ужал capacity до size (${state.vecCapacity}).`;
+        renderVectorLab();
+      });
+
+      document.getElementById('vecClearBtn').addEventListener('click', () => {
+        state.vecItems = [];
+        state.vecLastOp = 'clear';
+        document.getElementById('vecStatusText').textContent = `clear() очистил все элементы (size = 0), но выделенная память (capacity = ${state.vecCapacity}) осталась за вектором.`;
+        renderVectorLab();
+      });
+
+      document.getElementById('vecResetBtn').addEventListener('click', () => {
+        state.vecItems = [];
+        state.vecCapacity = 0;
+        state.vecReallocs = 0;
+        state.vecAddrHex = 'nullptr';
+        state.vecLastOp = 'init';
+        document.getElementById('vecValueInput').value = 7;
+        document.getElementById('vecStatusText').textContent = 'Вектор сброшен (size = 0, capacity = 0). Попробуйте нажать push_back() несколько раз или сначала reserve(8).';
+        renderVectorLab();
+      });
+
+      // Quiz controls
+      document.getElementById('quizCategorySelect').addEventListener('change', e => {
+        state.quizCategory = e.target.value;
+        resetQuiz();
+      });
+      document.getElementById('quizRestartBtn').addEventListener('click', resetQuiz);
+      document.getElementById('quizTryAgainBtn').addEventListener('click', resetQuiz);
+      document.getElementById('quizGoRefBtn').addEventListener('click', () => {
+        state.view = 'reference';
+        renderViewTabs();
+      });
+      document.getElementById('quizBody').addEventListener('click', e => {
+        const btn = e.target.closest('.quiz-opt-btn');
+        if (!btn) return;
+        handleQuizAnswer(Number(btn.dataset.qopt));
+      });
+      document.getElementById('quizNextBtn').addEventListener('click', () => {
+        state.quizIndex += 1;
+        state.quizAnswered = false;
+        renderQuizQuestion();
+      });
+    }
+
+    function init() {
+      loadSavedState();
+      applyTheme();
+      applyCodeSize();
+      populateQuizCategories();
+      bindEvents();
+
+      renderViewTabs();
+      renderSidebar();
+      renderReference();
+      renderLabTabs();
+      renderLinkedList();
+      renderSizeofTable();
+      renderOverflowSim();
+      renderStlLab();
+      renderErrorsLab();
+      renderStructLab();
+      renderBitwiseLab();
+      renderVectorLab();
+      resetQuiz();
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
